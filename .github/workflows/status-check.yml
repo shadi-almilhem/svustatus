@@ -1,0 +1,61 @@
+name: Scheduled Status Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  status-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout app
+        uses: actions/checkout@v4
+        with:
+          path: app
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Restore status data branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p status-data
+          cd status-data
+          git init
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          if git ls-remote --exit-code --heads origin status-data >/dev/null 2>&1; then
+            git fetch origin status-data --depth=1
+            git checkout status-data
+          else
+            git checkout --orphan status-data
+            rm -rf ./*
+          fi
+
+      - name: Run status checks
+        run: |
+          node app/scripts/check-status.mjs \
+            --config app/monitor.config.json \
+            --input status-data/status.json \
+            --output status-data/status.json
+
+      - name: Publish status data
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd status-data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add status.json
+          if git diff --cached --quiet; then
+            echo "No status data changes to publish."
+            exit 0
+          fi
+          git commit -m "Update status data"
+          git push origin HEAD:status-data

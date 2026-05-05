@@ -1,0 +1,48 @@
+{
+  "timezone": "Asia/Dubai",
+  "historyDays": 45,
+  "timeoutMs": 20000,
+  "retries": 3,
+  "monitors": [
+    {
+      "id": "svuis",
+      "name": {
+        "en": "SVUIS",
+        "ar": "نظام معلومات الطلاب"
+      },
+      "url": "https://svuis.svuonline.org/SVUIS/index.php"
+    },
+    {
+      "id": "lms",
+      "name": {
+        "en": "LMS",
+        "ar": "نظام إدارة التعلم"
+      },
+      "url": "https://lms.svuonline.org/login/index.php"
+    },
+    {
+      "id": "mail",
+      "name": {
+        "en": "SVU Mail",
+        "ar": "البريد الجامعي"
+      },
+      "url": "https://mail.svuonline.org/"
+    },
+    {
+      "id": "website",
+      "name": {
+        "en": "SVU Website",
+        "ar": "موقع الجامعة"
+      },
+      "url": "https://svuonline.org/"
+    },
+    {
+      "id": "requests",
+      "name": {
+        "en": "Requests System",
+        "ar": "نظام الطلبات"
+      },
+      "url": "https://requestsystem.svuonline.org/"
+    }
+  ]
+}
