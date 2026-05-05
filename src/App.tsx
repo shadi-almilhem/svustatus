@@ -4,8 +4,6 @@ import {
   StatusComponent,
   StatusComponentBody,
   StatusComponentHeader,
-  StatusComponentHeaderLeft,
-  StatusComponentHeaderRight,
   StatusComponentIcon,
   StatusComponentStatus,
   StatusComponentTitle,
@@ -48,7 +46,11 @@ import {
   RefreshCw,
   Wifi,
 } from "lucide-react";
+import { GithubLogo } from "@phosphor-icons/react/GithubLogo";
 import { useEffect, useMemo, useState } from "react";
+
+const REPOSITORY_URL = "https://github.com/shadi-almilhem/svustatus";
+const AUTHOR_URL = "https://shadialmilhem.com";
 
 function App() {
   const [locale, setLocale] = useState<Locale>(getInitialLocale);
@@ -114,6 +116,16 @@ function App() {
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
+                <a
+                  className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground"
+                  href={REPOSITORY_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={text.repository}
+                  title={text.repository}
+                >
+                  <GithubLogo className="size-4" />
+                </a>
                 <a
                   className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground"
                   href={STATUS_DATA_URL}
@@ -233,6 +245,20 @@ function App() {
                 </section>
               </StatusContent>
             </Status>
+
+            <footer className="border-border border-t">
+              <a
+                className="flex min-h-12 items-center justify-center gap-1.5 px-3 text-muted-foreground text-sm transition hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                href={AUTHOR_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>{text.madeBy}</span>
+                <span className="border-muted-foreground/35 border-b border-dashed pb-0.5 text-foreground">
+                  {text.authorName}
+                </span>
+              </a>
+            </footer>
           </div>
         </main>
       </TooltipProvider>
@@ -256,17 +282,17 @@ function MonitorRow({
   return (
     <StatusComponent
       variant={variant}
-      className="rounded-lg border bg-card px-4 py-4 shadow-sm"
+      className="rounded-lg border bg-card px-4 py-4"
     >
-      <StatusComponentHeader className="gap-4">
-        <StatusComponentHeaderLeft className="min-w-0">
-          <StatusComponentIcon className="shrink-0" />
+      <StatusComponentHeader className="items-start gap-4">
+        <div className="flex min-w-0 items-start gap-2">
+          <StatusComponentIcon className="mt-1 shrink-0" />
           <div className="min-w-0">
             <StatusComponentTitle className="truncate text-base">
               {displayName(monitor.name, locale)}
             </StatusComponentTitle>
             <a
-              className="mt-1 inline-flex max-w-full items-center gap-1 truncate text-muted-foreground text-xs hover:text-foreground"
+              className="mt-2 inline-flex max-w-full items-center gap-1 truncate text-muted-foreground text-xs hover:text-foreground"
               href={monitor.url}
               target="_blank"
               rel="noreferrer"
@@ -275,16 +301,16 @@ function MonitorRow({
               <ExternalLink className="size-3 shrink-0" />
             </a>
           </div>
-        </StatusComponentHeaderLeft>
-        <StatusComponentHeaderRight className="shrink-0">
+        </div>
+        <div className="flex shrink-0 items-start gap-3 pt-0.5">
           <StatusComponentUptime>{monitor.uptimeLabel}</StatusComponentUptime>
           <StatusComponentStatus />
-        </StatusComponentHeaderRight>
+        </div>
       </StatusComponentHeader>
 
       <StatusComponentBody className="pt-3">
         <StatusBar data={data} />
-        <div className="flex items-center justify-between gap-3 font-mono text-muted-foreground text-xs">
+        <div className="flex items-center justify-between gap-3 text-muted-foreground text-xs">
           <span>{text.uptime}</span>
           <span>{formatDateTime(monitor.latest?.checkedAt, locale, timezone)}</span>
         </div>
@@ -336,7 +362,7 @@ function Detail({
   return (
     <div className="rounded-md bg-muted/60 px-3 py-2">
       <dt className="text-muted-foreground text-xs">{label}</dt>
-      <dd className="mt-1 font-mono text-foreground">{children}</dd>
+      <dd className="mt-1 text-foreground">{children}</dd>
     </div>
   );
 }

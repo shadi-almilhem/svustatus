@@ -7,8 +7,16 @@ const localeCode: Record<Locale, string> = {
 };
 
 export const locales = [
-  { value: "en", label: "English" },
-  { value: "ar", label: "العربية" },
+  {
+    value: "en",
+    label: "English",
+    flagSrc: "https://hatscripts.github.io/circle-flags/flags/us.svg",
+  },
+  {
+    value: "ar",
+    label: "العربية",
+    flagSrc: "https://hatscripts.github.io/circle-flags/flags/sy.svg",
+  },
 ];
 
 export const copy = {
@@ -19,6 +27,9 @@ export const copy = {
     description:
       "Public reachability checks for the student portal, LMS, mail, website, and request system.",
     source: "GitHub data",
+    repository: "GitHub repository",
+    madeBy: "Made by",
+    authorName: "Shadi Al Milhem",
     lastChecked: "Last checked",
     uptime: "45-day uptime",
     services: "Services",
@@ -41,6 +52,9 @@ export const copy = {
     description:
       "فحوصات وصول عامة لبوابة الطلاب، نظام التعلم، البريد، الموقع، ونظام الطلبات.",
     source: "بيانات GitHub",
+    repository: "مستودع GitHub",
+    madeBy: "صنع بواسطة",
+    authorName: "شادي الملحم",
     lastChecked: "آخر فحص",
     uptime: "التوفر خلال ٤٥ يوم",
     services: "الخدمات",

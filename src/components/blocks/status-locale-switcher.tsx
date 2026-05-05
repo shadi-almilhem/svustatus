@@ -16,6 +16,8 @@ export type StatusLocaleOption = {
   value: string;
   /** Human-readable label shown in the dropdown row. Caller decides language. */
   label: string;
+  /** Flag image used for compact locale switching. */
+  flagSrc?: string;
 };
 
 /**
@@ -42,6 +44,7 @@ export function StatusLocaleSwitcher({
   disabled?: boolean;
 }) {
   if (locales.length <= 1) return null;
+  const activeLocale = locales.find((locale) => locale.value === value) ?? locales[0];
 
   return (
     <DropdownMenu>
@@ -51,9 +54,19 @@ export function StatusLocaleSwitcher({
           variant="ghost"
           size="icon"
           disabled={disabled}
-          className="font-mono uppercase"
+          aria-label={activeLocale.label}
         >
-          {value}
+          {activeLocale.flagSrc ? (
+            <img
+              src={activeLocale.flagSrc}
+              alt=""
+              className="size-5 rounded-full"
+              loading="eager"
+              decoding="async"
+            />
+          ) : (
+            activeLocale.label
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" alignOffset={-4}>
@@ -64,17 +77,16 @@ export function StatusLocaleSwitcher({
               key={locale.value}
               onClick={() => onValueChange(locale.value)}
             >
-              {locale.label}{" "}
-              <span
-                className={cn(
-                  "ms-auto font-mono uppercase",
-                  locale.value === value
-                    ? "text-foreground"
-                    : "text-muted-foreground",
-                )}
-              >
-                {locale.value}
-              </span>
+              {locale.flagSrc && (
+                <img
+                  src={locale.flagSrc}
+                  alt=""
+                  className="size-4 rounded-full"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+              {locale.label}
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>

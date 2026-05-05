@@ -642,7 +642,7 @@ function StatusBarCard({
           <Separator />
           <div className="flex cursor-pointer items-center p-2 text-muted-foreground text-xs">
             <span>{labels.clickAgainToUnpin}</span>
-            <kbd className="ms-auto inline-flex h-5 max-h-5 min-w-5 items-center justify-center rounded border border-input bg-background px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+            <kbd className="ms-auto inline-flex h-5 max-h-5 min-w-5 items-center justify-center rounded border border-input bg-background px-1.5 text-[10px] font-medium text-muted-foreground">
               Esc
             </kbd>
           </div>
@@ -718,7 +718,7 @@ function StatusBarContent({
         />
         <div className="text-sm">{labels.requestStatus[status]}</div>
       </div>
-      <div className="ms-auto font-mono text-muted-foreground text-xs tracking-tight">
+      <div className="ms-auto text-muted-foreground text-xs tracking-tight">
         {value}
       </div>
     </div>
@@ -812,7 +812,7 @@ export function StatusBarEvent({
       </div>
       <div className="mt-1 text-muted-foreground text-xs">
         {labels.formatDateRange(from, to ?? undefined)}{" "}
-        <span className="ms-1.5 font-mono text-muted-foreground/70">
+        <span className="ms-1.5 text-muted-foreground/70">
           {formatDuration({ from, to, name, type, isAggregated, labels })}
         </span>
       </div>

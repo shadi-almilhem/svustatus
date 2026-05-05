@@ -187,7 +187,7 @@ function SimpleTimestamp({
       <Tooltip>
         <TooltipTrigger
           className={cn(
-            "font-mono text-muted-foreground underline decoration-muted-foreground/30 decoration-dashed underline-offset-4",
+            "text-muted-foreground underline decoration-muted-foreground/30 decoration-dashed underline-offset-4",
             className,
           )}
           {...props}
@@ -195,7 +195,7 @@ function SimpleTimestamp({
           {children || format(new UTCDate(date), "LLL dd, y HH:mm (z)")}
         </TooltipTrigger>
         <TooltipContent data-slot="status-timestamp-content">
-          <p className="font-mono">{format(date, "LLL dd, y HH:mm (z)")}</p>
+          <p>{format(date, "LLL dd, y HH:mm (z)")}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -330,7 +330,7 @@ function StatusTimestampRow({
       }}
     >
       <dt className="text-muted-foreground">{label}</dt>
-      <dd className="flex items-center gap-1 truncate font-mono">
+      <dd className="flex items-center gap-1 truncate">
         <span className="invisible group-hover:visible">
           {!isCopied ? (
             <Copy className="h-3 w-3" />

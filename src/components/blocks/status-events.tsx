@@ -546,13 +546,13 @@ export function StatusEventTimelineReportUpdate({
             <StatusEventTimelineTitle>
               <span>{labels.incidentStatus[report.status]}</span>{" "}
               <span className="text-muted-foreground/70">·</span>{" "}
-              <span className="font-mono text-muted-foreground text-xs">
+              <span className="text-muted-foreground text-xs">
                 <StatusTimestamp date={report.date} variant="rich" asChild>
                   <span>{labels.formatDateTime(report.date)}</span>
                 </StatusTimestamp>
               </span>{" "}
               {duration ? (
-                <span className="font-mono text-muted-foreground/70 text-xs">
+                <span className="text-muted-foreground/70 text-xs">
                   {duration}
                 </span>
               ) : null}
@@ -644,7 +644,7 @@ export function StatusEventTimelineMaintenance({
             <StatusEventTimelineTitle>
               <span>{maintenance.title}</span>{" "}
               <span className="text-muted-foreground/70">·</span>{" "}
-              <span className="font-mono text-muted-foreground text-xs">
+              <span className="text-muted-foreground text-xs">
                 <StatusTimestamp date={maintenance.from} variant="rich" asChild>
                   <span>{from}</span>
                 </StatusTimestamp>
@@ -654,7 +654,7 @@ export function StatusEventTimelineMaintenance({
                 </StatusTimestamp>
               </span>{" "}
               {duration ? (
-                <span className="font-mono text-muted-foreground/70 text-xs">
+                <span className="text-muted-foreground/70 text-xs">
                   {labels.durationFor(duration)}
                 </span>
               ) : null}
@@ -728,7 +728,7 @@ export function StatusEventTimelineMessage({
     <div
       data-slot="status-event-timeline-message"
       className={cn(
-        "py-1.5 font-mono text-muted-foreground text-sm",
+        "py-1.5 text-muted-foreground text-sm",
         className,
       )}
       {...props}

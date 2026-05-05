@@ -450,7 +450,6 @@ export function StatusBannerTabsTrigger({
       data-slot="status-banner-tabs-trigger"
       data-status={status}
       className={cn(
-        "font-mono",
         "rounded-none border-none focus-visible:ring-inset",
         "h-full text-foreground data-[state=active]:text-background dark:text-foreground dark:data-[state=active]:text-background",
         "data-[state=active]:data-[status=success]:bg-success data-[status=success]:bg-success/50 dark:data-[state=active]:data-[status=success]:bg-success dark:data-[status=success]:bg-success/50",

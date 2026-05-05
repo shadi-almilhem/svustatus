@@ -95,7 +95,7 @@ export function StatusBlankDescription({
 }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("font-mono text-muted-foreground text-sm", className)}
+      className={cn("text-muted-foreground text-sm", className)}
       {...props}
     >
       {children}
@@ -549,7 +549,7 @@ export function StatusBlankAction({
     <div
       data-slot="status-blank-action"
       className={cn(
-        "mt-2 inline-flex items-center justify-center rounded-md border border-border/70 px-3 py-1.5 font-mono text-muted-foreground text-sm hover:border-border hover:text-foreground [&>a]:no-underline [&>a]:text-inherit",
+        "mt-2 inline-flex items-center justify-center rounded-md border border-border/70 px-3 py-1.5 text-muted-foreground text-sm hover:border-border hover:text-foreground [&>a]:no-underline [&>a]:text-inherit",
         className,
       )}
       {...props}

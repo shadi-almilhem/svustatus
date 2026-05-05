@@ -147,7 +147,7 @@ export function StatusComponentGroup({
         <CollapsibleTrigger
           data-slot="status-component-group-trigger"
           className={cn(
-            "group/component flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 font-medium font-mono",
+            "group/component flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 font-medium",
             "cursor-pointer",
             className,
           )}

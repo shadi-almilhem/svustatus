@@ -268,7 +268,7 @@ export function StatusComponentTitle({
     <div
       data-slot="status-component-title"
       className={cn(
-        "truncate font-medium font-mono text-base text-foreground leading-5",
+        "truncate font-medium text-base text-foreground leading-5",
         className,
       )}
       {...props}
@@ -414,7 +414,7 @@ export function StatusComponentFooter({
   return (
     <div
       data-slot="status-component-footer"
-      className="flex flex-row items-center justify-between font-mono text-muted-foreground text-xs leading-none"
+      className="flex flex-row items-center justify-between text-muted-foreground text-xs leading-none"
     >
       <div>
         {isLoading ? (
@@ -463,7 +463,7 @@ export function StatusComponentUptime({
     <div
       data-slot="status-component-uptime"
       className={cn(
-        "font-mono text-foreground/80 text-sm leading-none",
+        "text-foreground/80 text-sm leading-none",
         className,
       )}
       {...props}
@@ -546,7 +546,7 @@ export function StatusComponentStatus({
     <div
       data-slot="status-component-status"
       className={cn(
-        "font-mono text-sm leading-none",
+        "text-sm leading-none",
         "group-data-[variant=success]/component:text-success",
         "group-data-[variant=degraded]/component:text-warning",
         "group-data-[variant=error]/component:text-destructive",
