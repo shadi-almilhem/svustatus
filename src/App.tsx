@@ -381,7 +381,7 @@ function EmptyState({
       </div>
       <div className="mt-3 font-semibold">{title}</div>
       <p className="mx-auto mt-1 max-w-md text-muted-foreground text-sm">
-        {description}
+        {description} 
       </p>
     </div>
   );
