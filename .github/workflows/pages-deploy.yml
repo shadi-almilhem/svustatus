@@ -1,0 +1,73 @@
+# Builds the Vite app and deploys static assets to Cloudflare Pages (Direct Upload / CI).
+#
+# Required secrets for this workflow (choose ONE place to store them):
+#
+# A) Repository secrets (simplest — no GitHub “Environment” needed)
+#    Repo → Settings → Secrets and variables → Actions → “Repository secrets”
+#    → New repository secret:
+#      - CLOUDFLARE_API_TOKEN — https://dash.cloudflare.com/profile/api-tokens
+#        (e.g. “Edit Cloudflare Workers” or custom: Account → Cloudflare Pages → Edit)
+#      - CLOUDFLARE_ACCOUNT_ID — Cloudflare dashboard → Account home → Account ID
+#
+# B) Environment secrets (optional — if you use job.environment below)
+#    Repo → Settings → Environments → create an environment (e.g. cloudflare-pages)
+#    → add the same two names there, and uncomment `environment:` on the deploy job.
+#
+# Do not put these values in .env.production or any committed file.
+#
+# If your Cloudflare Pages project name differs, change --project-name in the deploy step.
+
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Uncomment the next line if CLOUDFLARE_* secrets are stored under
+    # Settings → Environments → <name> (Environment secrets), not repository secrets.
+    # environment: cloudflare-pages
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: |
+          if [ ! -f pnpm-lock.yaml ]; then
+            pnpm import
+          fi
+          pnpm install --frozen-lockfile
+
+      - name: Build
+        env:
+          VITE_STATUS_DATA_URL: https://raw.githubusercontent.com/${{ github.repository }}/status-data/status.json
+        run: pnpm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=svustatus
