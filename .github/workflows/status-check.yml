@@ -29,7 +29,7 @@ jobs:
           mkdir -p status-data
           cd status-data
           git init
-          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/$GITHUB_REPOSITORY"
           if git ls-remote --exit-code --heads origin status-data >/dev/null 2>&1; then
             git fetch origin status-data --depth=1
             git checkout status-data
