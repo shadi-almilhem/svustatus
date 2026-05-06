@@ -29,6 +29,9 @@
 }
 
 :root {
+  --expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-toggle-x: 100vw;
+  --theme-toggle-y: 0px;
   --background: oklch(1 0 0);
   --foreground: oklch(0.148 0.004 228.8);
   --card: oklch(1 0 0);
@@ -72,41 +75,41 @@
 }
 
 .dark {
-  --background: oklch(0.148 0.004 228.8);
-  --foreground: oklch(0.987 0.002 197.1);
-  --card: oklch(0.218 0.008 223.9);
-  --card-foreground: oklch(0.987 0.002 197.1);
-  --popover: oklch(0.218 0.008 223.9);
-  --popover-foreground: oklch(0.987 0.002 197.1);
-  --primary: oklch(0.443 0.11 240.79);
-  --primary-foreground: oklch(0.977 0.013 236.62);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.275 0.011 216.9);
-  --muted-foreground: oklch(0.723 0.014 214.4);
-  --accent: oklch(0.275 0.011 216.9);
-  --accent-foreground: oklch(0.987 0.002 197.1);
-  --destructive: oklch(0.704 0.191 22.216);
-  --success: oklch(0.72 0.17 145);
-  --warning: oklch(0.78 0.14 75);
-  --info: oklch(0.72 0.13 245);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.56 0.021 213.5);
+  --background: oklch(0.145 0.005 82);
+  --foreground: oklch(0.962 0.006 95);
+  --card: oklch(0.2 0.007 82);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.205 0.007 82);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.69 0.145 238);
+  --primary-foreground: oklch(0.12 0.018 238);
+  --secondary: oklch(0.265 0.008 82);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.27 0.007 82);
+  --muted-foreground: oklch(0.72 0.012 95);
+  --accent: oklch(0.27 0.032 164);
+  --accent-foreground: oklch(0.93 0.035 154);
+  --destructive: oklch(0.68 0.19 25);
+  --success: oklch(0.73 0.17 145);
+  --warning: oklch(0.82 0.15 82);
+  --info: oklch(0.74 0.13 238);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.72 0.12 238);
   color-scheme: dark;
-  --chart-1: oklch(0.828 0.111 230.318);
-  --chart-2: oklch(0.685 0.169 237.323);
-  --chart-3: oklch(0.588 0.158 241.966);
-  --chart-4: oklch(0.5 0.134 242.749);
-  --chart-5: oklch(0.443 0.11 240.79);
-  --sidebar: oklch(0.218 0.008 223.9);
-  --sidebar-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-primary: oklch(0.685 0.169 237.323);
-  --sidebar-primary-foreground: oklch(0.293 0.066 243.157);
-  --sidebar-accent: oklch(0.275 0.011 216.9);
-  --sidebar-accent-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.56 0.021 213.5);
+  --chart-1: oklch(0.8 0.12 230);
+  --chart-2: oklch(0.72 0.16 238);
+  --chart-3: oklch(0.66 0.16 242);
+  --chart-4: oklch(0.74 0.13 145);
+  --chart-5: oklch(0.82 0.15 82);
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }
 
 @theme inline {
@@ -179,5 +182,41 @@
   }
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+}
+
+@supports (view-transition-name: root) {
+  ::view-transition-group(root) {
+    animation-timing-function: var(--expo-out);
+  }
+
+  ::view-transition-new(root) {
+    mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGRlZnM+PGZpbHRlciBpZD0iYmx1ciI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMiIvPjwvZmlsdGVyPjwvZGVmcz48Y2lyY2xlIGN4PSIwIiBjeT0iMCIgcj0iMTgiIGZpbGw9IndoaXRlIiBmaWx0ZXI9InVybCgjYmx1cikiLz48L3N2Zz4=") var(--theme-toggle-x) var(--theme-toggle-y) / 0 no-repeat;
+    mask-origin: content-box;
+    animation: theme-reveal 850ms;
+    animation-fill-mode: both;
+    transform-origin: var(--theme-toggle-x) var(--theme-toggle-y);
+    z-index: 1;
+  }
+
+  ::view-transition-old(root),
+  .dark::view-transition-old(root) {
+    animation: theme-reveal 850ms;
+    animation-fill-mode: both;
+    transform-origin: var(--theme-toggle-x) var(--theme-toggle-y);
+    z-index: -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root),
+  ::view-transition-old(root) {
+    animation: none;
+  }
+}
+
+@keyframes theme-reveal {
+  to {
+    mask-size: 350vmax;
   }
 }

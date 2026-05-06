@@ -21,6 +21,7 @@ import { StatusLocaleSwitcher } from "@/components/blocks/status-locale-switcher
 import { StatusBlocksI18nProvider } from "@/components/blocks/status-i18n";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { copy, getInitialLocale, locales, makeStatusLabels } from "@/lib/status-i18n";
+import { cn } from "@/lib/utils";
 import {
   STATUS_DATA_URL,
   displayName,
@@ -43,17 +44,24 @@ import {
   ExternalLink,
   GitBranch,
   LoaderCircle,
+  Moon,
   RefreshCw,
+  Sun,
   Wifi,
 } from "lucide-react";
 import { GithubLogo } from "@phosphor-icons/react/GithubLogo";
 import { useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 const REPOSITORY_URL = "https://github.com/shadi-almilhem/svustatus";
 const AUTHOR_URL = "https://shadialmilhem.com";
+const THEME_STORAGE_KEY = "svustatus-theme";
+
+type ThemeMode = "light" | "dark";
 
 function App() {
   const [locale, setLocale] = useState<Locale>(getInitialLocale);
+  const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
   const [payload, setPayload] = useState<StatusPayload | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +83,10 @@ function App() {
     document.documentElement.lang = locale;
     document.documentElement.dir = direction;
   }, [direction, locale]);
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -126,6 +138,11 @@ function App() {
                 >
                   <GithubLogo className="size-4" />
                 </a>
+                <ThemeToggle
+                  theme={theme}
+                  label={labels.ariaToggleTheme}
+                  onToggle={(event) => toggleTheme(event, theme, setTheme)}
+                />
                 <a
                   className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground"
                   href={STATUS_DATA_URL}
@@ -263,6 +280,43 @@ function App() {
         </main>
       </TooltipProvider>
     </StatusBlocksI18nProvider>
+  );
+}
+
+function ThemeToggle({
+  theme,
+  label,
+  onToggle,
+}: {
+  theme: ThemeMode;
+  label: string;
+  onToggle: React.MouseEventHandler<HTMLButtonElement>;
+}) {
+  return (
+    <button
+      type="button"
+      className="group/theme-toggle inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      aria-label={label}
+      title={label}
+      onClick={onToggle}
+    >
+      <span className="relative size-4 overflow-hidden">
+        <Sun
+          className={cn(
+            "absolute inset-0 size-4 transition duration-300",
+            theme === "dark" ? "-rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100",
+          )}
+          aria-hidden="true"
+        />
+        <Moon
+          className={cn(
+            "absolute inset-0 size-4 transition duration-300",
+            theme === "dark" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0",
+          )}
+          aria-hidden="true"
+        />
+      </span>
+    </button>
   );
 }
 
@@ -411,6 +465,49 @@ function getOverallUptime(monitors: MonitorStatus[], locale: Locale) {
   return `${new Intl.NumberFormat(locale, {
     maximumFractionDigits: 2,
   }).format(average)}%`;
+}
+
+function getInitialTheme(): ThemeMode {
+  if (typeof window === "undefined") return "light";
+  const saved = window.localStorage.getItem(THEME_STORAGE_KEY);
+  if (saved === "light" || saved === "dark") return saved;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(theme: ThemeMode) {
+  document.documentElement.classList.toggle("dark", theme === "dark");
+  document.documentElement.style.colorScheme = theme;
+}
+
+function toggleTheme(
+  event: React.MouseEvent<HTMLButtonElement>,
+  currentTheme: ThemeMode,
+  setTheme: React.Dispatch<React.SetStateAction<ThemeMode>>,
+) {
+  const nextTheme = currentTheme === "dark" ? "light" : "dark";
+  const root = document.documentElement;
+  root.style.setProperty("--theme-toggle-x", `${event.clientX}px`);
+  root.style.setProperty("--theme-toggle-y", `${event.clientY}px`);
+
+  const updateTheme = () => {
+    window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    flushSync(() => {
+      setTheme(nextTheme);
+      applyTheme(nextTheme);
+    });
+  };
+
+  const documentWithTransition = document as Document & {
+    startViewTransition?: (callback: () => void) => void;
+  };
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!documentWithTransition.startViewTransition || prefersReducedMotion) {
+    updateTheme();
+    return;
+  }
+
+  documentWithTransition.startViewTransition(updateTheme);
 }
 
 export default App;
