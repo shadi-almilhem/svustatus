@@ -141,7 +141,7 @@ function App() {
                 <ThemeToggle
                   theme={theme}
                   label={labels.ariaToggleTheme}
-                  onToggle={(event) => toggleTheme(event, theme, setTheme)}
+                  onToggle={() => toggleTheme(theme, setTheme)}
                 />
                 <a
                   className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground"
@@ -480,14 +480,10 @@ function applyTheme(theme: ThemeMode) {
 }
 
 function toggleTheme(
-  event: React.MouseEvent<HTMLButtonElement>,
   currentTheme: ThemeMode,
   setTheme: React.Dispatch<React.SetStateAction<ThemeMode>>,
 ) {
   const nextTheme = currentTheme === "dark" ? "light" : "dark";
-  const root = document.documentElement;
-  root.style.setProperty("--theme-toggle-x", `${event.clientX}px`);
-  root.style.setProperty("--theme-toggle-y", `${event.clientY}px`);
 
   const updateTheme = () => {
     window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
