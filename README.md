@@ -95,16 +95,23 @@ VITE_STATUS_DATA_URL=https://raw.githubusercontent.com/shadi-almilhem/svustatus/
 
 - on `workflow_dispatch`
 - hourly at minute 17
+- at minute 47 as a guarded backup
 
 The workflow:
 
-1. Checks out the app.
-2. Restores or creates the `status-data` branch.
-3. Runs `scripts/check-status.mjs`.
-4. Writes `status.json`.
-5. Pushes only `status.json` back to `status-data`.
+1. Checks whether the latest `status-data/status.json` is stale.
+2. Skips the backup run when the data is still fresh.
+3. Restores or creates the `status-data` branch.
+4. Runs `scripts/check-status.mjs`.
+5. Writes `status.json`.
+6. Pushes only `status.json` back to `status-data`.
 
 The workflow needs `contents: write`, which is already declared in the workflow file.
+
+The primary cron expression is `17 * * * *`, which is hourly. GitHub scheduled
+workflows can occasionally be delayed or skipped, so the guarded backup entry
+keeps the status data close to hourly without running duplicate checks every
+30 minutes.
 
 ## Deployment
 
@@ -115,6 +122,19 @@ For Cloudflare Pages or any static host:
 - Production environment variable: `VITE_STATUS_DATA_URL=https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/status.json`
 
 The repository or the generated JSON URL must remain public. The current GitHub repository is public, so unauthenticated visitors can access both the repo page and the raw `status-data` JSON.
+
+This repo also includes `.github/workflows/pages-deploy.yml`, which deploys to
+Cloudflare Pages whenever code is pushed to `main`. The workflow uses
+`cloudflare/wrangler-action` and uploads the `dist` folder to the Pages project
+defined in `wrangler.toml`.
+
+Required GitHub Actions repository secrets:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+The API token must be allowed to edit Cloudflare Pages for the account that owns
+the `svustatus` Pages project. Do not commit Cloudflare tokens to `.env` files.
 
 ## Fonts
 

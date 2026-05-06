@@ -3,7 +3,10 @@ name: Scheduled Status Check
 on:
   workflow_dispatch:
   schedule:
+    # Primary hourly check. The :47 entry is a guarded backup for occasional
+    # GitHub scheduler delays/skips; it only runs checks when data is stale.
     - cron: "17 * * * *"
+    - cron: "47 * * * *"
 
 permissions:
   contents: write
@@ -27,7 +30,49 @@ jobs:
         with:
           node-version: 22
 
+      - name: Check status data freshness
+        id: freshness
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "reason=manual run" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          node --input-type=module <<'NODE'
+          import { appendFileSync } from "node:fs";
+
+          const outputPath = process.env.GITHUB_OUTPUT;
+          const url = `https://raw.githubusercontent.com/${process.env.GITHUB_REPOSITORY}/status-data/status.json?ts=${Date.now()}`;
+          let shouldRun = true;
+          let reason = "no existing status data";
+
+          try {
+            const response = await fetch(url, { cache: "no-store" });
+            if (response.ok) {
+              const payload = await response.json();
+              const generatedAt = new Date(payload.generatedAt).getTime();
+              const ageMinutes = (Date.now() - generatedAt) / 60_000;
+              shouldRun = !Number.isFinite(generatedAt) || ageMinutes >= 55;
+              reason = Number.isFinite(generatedAt)
+                ? `latest status data is ${Math.round(ageMinutes)} minutes old`
+                : "latest status data has an invalid timestamp";
+            } else {
+              reason = `status data request returned ${response.status}`;
+            }
+          } catch (error) {
+            reason = error instanceof Error ? error.message : "unknown freshness error";
+          }
+
+          appendFileSync(outputPath, `should_run=${shouldRun}\n`);
+          appendFileSync(outputPath, `reason=${reason.replaceAll("\n", " ")}\n`);
+          console.log(`${shouldRun ? "Running" : "Skipping"} checks: ${reason}`);
+          NODE
+
       - name: Restore status data branch
+        if: steps.freshness.outputs.should_run == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -44,6 +89,7 @@ jobs:
           fi
 
       - name: Run status checks
+        if: steps.freshness.outputs.should_run == 'true'
         run: |
           node app/scripts/check-status.mjs \
             --config app/monitor.config.json \
@@ -52,6 +98,7 @@ jobs:
           node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('status-data/status.json','utf8')); if (!Array.isArray(data.monitors) || data.monitors.length !== 5) throw new Error('Expected 5 monitors in status.json');"
 
       - name: Publish status data
+        if: steps.freshness.outputs.should_run == 'true'
         shell: bash
         run: |
           set -euo pipefail

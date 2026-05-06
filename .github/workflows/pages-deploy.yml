@@ -15,7 +15,8 @@
 #
 # Do not put these values in .env.production or any committed file.
 #
-# If your Cloudflare Pages project name differs, change --project-name in the deploy step.
+# If your Cloudflare Pages project name differs, change the project name in wrangler.toml
+# and in the deploy step.
 
 name: Deploy to Cloudflare Pages
 
@@ -70,4 +71,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=svustatus
+          command: pages deploy dist --project-name=svustatus --branch=main
