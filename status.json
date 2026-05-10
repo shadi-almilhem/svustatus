@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-10T18:39:34.883Z",
+  "generatedAt": "2026-05-10T19:35:39.377Z",
   "timezone": "Asia/Dubai",
   "historyDays": 45,
   "monitors": [
@@ -12,15 +12,15 @@
       },
       "url": "https://svuis.svuonline.org/SVUIS/index.php",
       "currentStatus": "success",
-      "uptimePercent": 96.1,
-      "uptimeLabel": "96.10%",
+      "uptimePercent": 96.15,
+      "uptimeLabel": "96.15%",
       "latest": {
         "id": "svuis",
         "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-05-10T18:39:32.345Z",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 2538,
+        "latencyMs": 1544,
         "attempt": 1
       },
       "daily": [
@@ -804,15 +804,15 @@
       },
       "url": "https://lms.svuonline.org/login/index.php",
       "currentStatus": "success",
-      "uptimePercent": 83.12,
-      "uptimeLabel": "83.12%",
+      "uptimePercent": 83.33,
+      "uptimeLabel": "83.33%",
       "latest": {
         "id": "lms",
         "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-05-10T18:39:32.345Z",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1800,
+        "latencyMs": 2163,
         "attempt": 1
       },
       "daily": [
@@ -1573,21 +1573,21 @@
           "bar": [
             {
               "status": "success",
-              "height": 56.25
+              "height": 58.82
             },
             {
               "status": "error",
-              "height": 43.75
+              "height": 41.18
             }
           ],
           "card": [
             {
               "status": "success",
-              "value": "13h 30m"
+              "value": "14h 7m"
             },
             {
               "status": "error",
-              "value": "10h 30m"
+              "value": "9h 53m"
             }
           ],
           "events": [
@@ -1708,15 +1708,15 @@
       },
       "url": "https://mail.svuonline.org/",
       "currentStatus": "success",
-      "uptimePercent": 96.1,
-      "uptimeLabel": "96.10%",
+      "uptimePercent": 96.15,
+      "uptimeLabel": "96.15%",
       "latest": {
         "id": "mail",
         "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-05-10T18:39:32.345Z",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1232,
+        "latencyMs": 2128,
         "attempt": 1
       },
       "daily": [
@@ -2500,15 +2500,15 @@
       },
       "url": "https://svuonline.org/",
       "currentStatus": "success",
-      "uptimePercent": 96.1,
-      "uptimeLabel": "96.10%",
+      "uptimePercent": 96.15,
+      "uptimeLabel": "96.15%",
       "latest": {
         "id": "website",
         "url": "https://svuonline.org/",
-        "checkedAt": "2026-05-10T18:39:32.345Z",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1754,
+        "latencyMs": 1493,
         "attempt": 1
       },
       "daily": [
@@ -3292,15 +3292,15 @@
       },
       "url": "https://requestsystem.svuonline.org/",
       "currentStatus": "success",
-      "uptimePercent": 96.1,
-      "uptimeLabel": "96.10%",
+      "uptimePercent": 96.15,
+      "uptimeLabel": "96.15%",
       "latest": {
         "id": "requests",
         "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-05-10T18:39:32.345Z",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1393,
+        "latencyMs": 1750,
         "attempt": 1
       },
       "daily": [
@@ -5000,6 +5000,15 @@
         "status": 200,
         "latencyMs": 2538,
         "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1544,
+        "attempt": 1
       }
     ],
     "lms": [
@@ -5702,6 +5711,15 @@
         "status": 200,
         "latencyMs": 1800,
         "attempt": 1
+      },
+      {
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 2163,
+        "attempt": 1
       }
     ],
     "mail": [
@@ -6399,6 +6417,15 @@
         "ok": true,
         "status": 200,
         "latencyMs": 1232,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 2128,
         "attempt": 1
       }
     ],
@@ -7098,6 +7125,15 @@
         "status": 200,
         "latencyMs": 1754,
         "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1493,
+        "attempt": 1
       }
     ],
     "requests": [
@@ -7792,6 +7828,15 @@
         "ok": true,
         "status": 200,
         "latencyMs": 1393,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-05-10T19:35:37.180Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1750,
         "attempt": 1
       }
     ]
