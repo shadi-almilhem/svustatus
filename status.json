@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-18T04:44:55.719Z",
+  "generatedAt": "2026-05-18T06:40:04.252Z",
   "timezone": "Asia/Dubai",
   "historyDays": 45,
   "monitors": [
@@ -17,10 +17,10 @@
       "latest": {
         "id": "svuis",
         "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-05-18T04:44:54.519Z",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1068,
+        "latencyMs": 1031,
         "attempt": 1
       },
       "daily": [
@@ -804,15 +804,15 @@
       },
       "url": "https://lms.svuonline.org/login/index.php",
       "currentStatus": "success",
-      "uptimePercent": 92.66,
-      "uptimeLabel": "92.66%",
+      "uptimePercent": 92.7,
+      "uptimeLabel": "92.70%",
       "latest": {
         "id": "lms",
         "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-05-18T04:44:54.519Z",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 911,
+        "latencyMs": 998,
         "attempt": 1
       },
       "daily": [
@@ -1713,10 +1713,10 @@
       "latest": {
         "id": "mail",
         "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-05-18T04:44:54.519Z",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 979,
+        "latencyMs": 924,
         "attempt": 1
       },
       "daily": [
@@ -2505,10 +2505,10 @@
       "latest": {
         "id": "website",
         "url": "https://svuonline.org/",
-        "checkedAt": "2026-05-18T04:44:54.519Z",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1162,
+        "latencyMs": 1415,
         "attempt": 1
       },
       "daily": [
@@ -3297,10 +3297,10 @@
       "latest": {
         "id": "requests",
         "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-05-18T04:44:54.519Z",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1130,
+        "latencyMs": 1110,
         "attempt": 1
       },
       "daily": [
@@ -5900,6 +5900,15 @@
         "status": 200,
         "latencyMs": 1068,
         "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1031,
+        "attempt": 1
       }
     ],
     "lms": [
@@ -7502,6 +7511,15 @@
         "status": 200,
         "latencyMs": 911,
         "attempt": 1
+      },
+      {
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 998,
+        "attempt": 1
       }
     ],
     "mail": [
@@ -9099,6 +9117,15 @@
         "ok": true,
         "status": 200,
         "latencyMs": 979,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 924,
         "attempt": 1
       }
     ],
@@ -10698,6 +10725,15 @@
         "status": 200,
         "latencyMs": 1162,
         "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1415,
+        "attempt": 1
       }
     ],
     "requests": [
@@ -12292,6 +12328,15 @@
         "ok": true,
         "status": 200,
         "latencyMs": 1130,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-05-18T06:40:02.794Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1110,
         "attempt": 1
       }
     ]
