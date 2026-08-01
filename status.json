@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-01T18:41:06.462Z",
+  "generatedAt": "2026-08-01T19:38:47.152Z",
   "timezone": "Asia/Dubai",
   "historyDays": 45,
   "monitors": [
@@ -17,10 +17,10 @@
       "latest": {
         "id": "svuis",
         "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-08-01T18:41:02.289Z",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 2109,
+        "latencyMs": 1076,
         "attempt": 1
       },
       "daily": [
@@ -809,11 +809,11 @@
       "latest": {
         "id": "lms",
         "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-08-01T18:41:02.289Z",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 2855,
-        "attempt": 1
+        "latencyMs": 18887,
+        "attempt": 3
       },
       "daily": [
         {
@@ -1657,10 +1657,10 @@
       "latest": {
         "id": "mail",
         "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-08-01T18:41:02.289Z",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1983,
+        "latencyMs": 1039,
         "attempt": 1
       },
       "daily": [
@@ -2394,17 +2394,18 @@
         "ar": "موقع الجامعة"
       },
       "url": "https://svuonline.org/",
-      "currentStatus": "success",
-      "uptimePercent": 99.51,
-      "uptimeLabel": "99.51%",
+      "currentStatus": "error",
+      "uptimePercent": 99.34,
+      "uptimeLabel": "99.34%",
       "latest": {
         "id": "website",
         "url": "https://svuonline.org/",
-        "checkedAt": "2026-08-01T18:41:02.289Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1852,
-        "attempt": 1
+        "checkedAt": "2026-08-01T19:37:45.227Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10494,
+        "attempt": 3,
+        "error": "fetch failed"
       },
       "daily": [
         {
@@ -3172,19 +3173,59 @@
           "bar": [
             {
               "status": "success",
-              "height": 100
+              "height": 94.44
+            },
+            {
+              "status": "error",
+              "height": 5.56
             }
           ],
           "card": [
             {
               "status": "success",
-              "value": "24h"
+              "value": "22h 40m"
+            },
+            {
+              "status": "error",
+              "value": "1h 20m"
             }
           ],
-          "events": []
+          "events": [
+            {
+              "id": 2027694917,
+              "name": "SVU Website outage",
+              "type": "incident",
+              "from": "2026-08-01T19:37:45.227Z",
+              "to": null
+            }
+          ]
         }
       ],
       "incidents": [
+        {
+          "id": 2027694917,
+          "monitorId": "website",
+          "title": {
+            "en": "SVU Website outage",
+            "ar": "انقطاع موقع الجامعة"
+          },
+          "affected": {
+            "en": "SVU Website",
+            "ar": "موقع الجامعة"
+          },
+          "startedAt": "2026-08-01T19:37:45.227Z",
+          "resolvedAt": null,
+          "updates": [
+            {
+              "status": "investigating",
+              "date": "2026-08-01T19:37:45.227Z",
+              "message": {
+                "en": "SVU Website did not respond successfully.",
+                "ar": "لم يستجب موقع الجامعة بنجاح."
+              }
+            }
+          ]
+        },
         {
           "id": 2080103687,
           "monitorId": "website",
@@ -3296,10 +3337,10 @@
       "latest": {
         "id": "requests",
         "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-08-01T18:41:02.289Z",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 4130,
+        "latencyMs": 1226,
         "attempt": 1
       },
       "daily": [
@@ -4028,6 +4069,30 @@
     }
   ],
   "incidents": [
+    {
+      "id": 2027694917,
+      "monitorId": "website",
+      "title": {
+        "en": "SVU Website outage",
+        "ar": "انقطاع موقع الجامعة"
+      },
+      "affected": {
+        "en": "SVU Website",
+        "ar": "موقع الجامعة"
+      },
+      "startedAt": "2026-08-01T19:37:45.227Z",
+      "resolvedAt": null,
+      "updates": [
+        {
+          "status": "investigating",
+          "date": "2026-08-01T19:37:45.227Z",
+          "message": {
+            "en": "SVU Website did not respond successfully.",
+            "ar": "لم يستجب موقع الجامعة بنجاح."
+          }
+        }
+      ]
+    },
     {
       "id": 986725140,
       "monitorId": "svuis",
@@ -9695,6 +9760,15 @@
         "status": 200,
         "latencyMs": 2109,
         "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1076,
+        "attempt": 1
       }
     ],
     "lms": [
@@ -15170,6 +15244,15 @@
         "status": 200,
         "latencyMs": 2855,
         "attempt": 1
+      },
+      {
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 18887,
+        "attempt": 3
       }
     ],
     "mail": [
@@ -20643,6 +20726,15 @@
         "ok": true,
         "status": 200,
         "latencyMs": 1983,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1039,
         "attempt": 1
       }
     ],
@@ -26120,6 +26212,16 @@
         "status": 200,
         "latencyMs": 1852,
         "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10494,
+        "attempt": 3,
+        "error": "fetch failed"
       }
     ],
     "requests": [
@@ -31593,6 +31695,15 @@
         "ok": true,
         "status": 200,
         "latencyMs": 4130,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-08-01T19:37:45.227Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1226,
         "attempt": 1
       }
     ]
