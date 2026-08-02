@@ -71,7 +71,9 @@ async function readFallbackStatusPayload(env: PagesEnv) {
   const fallbackUrl = env.PUBLIC_STATUS_DATA_URL || DEFAULT_STATUS_DATA_URL;
 
   try {
-    const fallbackResponse = await fetch(fallbackUrl, { cache: "no-store" });
+    const requestUrl = new URL(fallbackUrl);
+    requestUrl.searchParams.set("ts", String(Date.now()));
+    const fallbackResponse = await fetch(requestUrl);
     if (!fallbackResponse.ok) return null;
     return (await fallbackResponse.json()) as StatusPayload;
   } catch {
@@ -120,7 +122,9 @@ function getDailyCoverage(payload: StatusPayload | null | undefined) {
   return Math.min(...coverageByMonitor);
 }
 
-function isPayloadFresh(payload: StatusPayload | null | undefined) {
+function isPayloadFresh(
+  payload: StatusPayload | null | undefined,
+): payload is StatusPayload {
   const generatedAt = getPayloadTime(payload);
   return Number.isFinite(generatedAt) && Date.now() - generatedAt < STATUS_STALE_AFTER_MS;
 }

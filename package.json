@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "check:status": "node scripts/check-status.mjs --input public/status.json --output public/status.json",
-    "generate:og": "node scripts/generate-og-images.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run"
@@ -46,7 +45,6 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
     "shadcn": "^4.7.0",
-    "sharp": "^0.35.3",
     "tailwindcss": "^4.2.4",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",

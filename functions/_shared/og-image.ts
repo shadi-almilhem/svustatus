@@ -1,3 +1,5 @@
+import type { MonitorStatus } from "./status";
+
 const STATUS_COPY = {
   error: {
     label: "DOWN",
@@ -11,9 +13,13 @@ const STATUS_COPY = {
     color: "#16a34a",
     softColor: "#f0fdf4",
   },
-};
+} as const;
 
-export function renderOgSvg(monitor, generatedAt, siteUrl = "https://svustatus.pages.dev") {
+export function renderOgSvg(
+  monitor: MonitorStatus,
+  generatedAt: string | null,
+  siteUrl = "https://svustatus.pages.dev",
+) {
   const isDown = monitor.currentStatus === "error";
   const state = isDown ? STATUS_COPY.error : STATUS_COPY.success;
   const checkedAt = monitor.latest?.checkedAt ?? generatedAt;
@@ -26,7 +32,8 @@ export function renderOgSvg(monitor, generatedAt, siteUrl = "https://svustatus.p
         timeZone: "Asia/Dubai",
       }).format(new Date(checkedAt))
     : "No check yet";
-  const titleSize = monitor.name.en.length > 15 ? 68 : monitor.name.en.length > 9 ? 78 : 92;
+  const titleSize =
+    monitor.name.en.length > 15 ? 68 : monitor.name.en.length > 9 ? 78 : 92;
   const displayUrl = `${new URL(siteUrl).host}/${monitor.id}`;
   const latency = formatLatency(monitor.latest?.latencyMs ?? null);
 
@@ -58,14 +65,14 @@ export function renderOgSvg(monitor, generatedAt, siteUrl = "https://svustatus.p
 </svg>`;
 }
 
-function formatLatency(latencyMs) {
+function formatLatency(latencyMs: number | null) {
   if (latencyMs === null) return "—";
   if (latencyMs < 1_000) return `${latencyMs} ms`;
   const seconds = latencyMs / 1_000;
   return `${seconds >= 10 ? Math.round(seconds) : seconds.toFixed(1)} s`;
 }
 
-function escapeXml(value) {
+function escapeXml(value: unknown) {
   return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")

@@ -67,6 +67,13 @@ jobs:
           VITE_STATUS_DATA_URL: /api/status
         run: pnpm run build
 
+      - name: Deploy dynamic OG JPEG renderer
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.og.toml
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:

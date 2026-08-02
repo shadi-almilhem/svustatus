@@ -93,10 +93,18 @@ VITE_STATUS_DATA_URL=https://raw.githubusercontent.com/shadi-almilhem/svustatus/
 
 ## Cloudflare Runtime
 
-Production uses two Cloudflare pieces:
+Production uses three Cloudflare pieces:
 
-- Cloudflare Pages + Pages Functions for the React app, `/api/status`, `/api/watch`, `/api/push-config`, service route meta injection, and `/og/<service>.png`.
+- Cloudflare Pages + Pages Functions for the React app, `/api/status`, `/api/watch`, `/api/push-config`, service route meta injection, and `/og/<service>.jpg`.
 - A separate Worker from `wrangler.status.toml` for the `5 * * * *` hourly checks.
+- A private service-bound Worker from `wrangler.og.toml` that converts the
+  request-generated SVG card into a real JPEG through Cloudflare Images.
+
+OG cards are generated on demand. No generated card files are stored in the
+repository, KV, R2, or the `status-data` branch. The Pages Function reads the
+current monitor data, builds a 1200 x 630 SVG in memory, and calls the private
+renderer through the `OG_RENDERER` service binding. Cloudflare Images performs
+the SVG-to-JPEG conversion outside the Pages Function CPU budget.
 
 On every run, the Worker merges the public `status-data` branch with KV before
 adding the new measurement. That preserves older checks collected by the GitHub
@@ -122,10 +130,11 @@ npx wrangler secret put VAPID_PRIVATE_KEY --config wrangler.status.toml
 
 Add `VAPID_PUBLIC_KEY` to the `[vars]` section for both `wrangler.toml` and `wrangler.status.toml`, because `/api/push-config` exposes the public key to browsers and the scheduled Worker needs the same public key when signing push messages. `VAPID_PRIVATE_KEY` must stay only on the scheduled Worker secret.
 
-Deploy the scheduled checker:
+Deploy the scheduled checker and the private OG renderer:
 
 ```bash
 npx wrangler deploy --config wrangler.status.toml
+npx wrangler deploy --config wrangler.og.toml
 ```
 
 ## GitHub Actions
@@ -160,11 +169,12 @@ For Cloudflare Pages or any static host:
 
 The repository or the generated JSON URL should remain public for fallback use. Production status reads from Cloudflare KV through `/api/status`; the raw `status-data` JSON remains a backup source.
 
-This repo also includes `.github/workflows/pages-deploy.yml`, which deploys both
-Cloudflare Pages and the hourly status Worker whenever code is pushed to `main`.
-The workflow uses `cloudflare/wrangler-action`, uploads `dist` to the Pages
-project defined in `wrangler.toml`, and deploys `wrangler.status.toml` so code
-and Cron Trigger changes stay in sync.
+This repo also includes `.github/workflows/pages-deploy.yml`, which deploys the
+private OG renderer first, then Cloudflare Pages, and finally the hourly status
+Worker whenever code is pushed to `main`. The workflow uses
+`cloudflare/wrangler-action`, uploads `dist` to the Pages project defined in
+`wrangler.toml`, and deploys both Worker configurations so their bindings and
+code stay in sync.
 
 Required GitHub Actions repository secrets:
 
@@ -172,7 +182,8 @@ Required GitHub Actions repository secrets:
 - `CLOUDFLARE_ACCOUNT_ID`
 
 The API token must be allowed to edit Cloudflare Pages and Workers Scripts for
-the account that owns the `svustatus` Pages project and `svustatus-cron` Worker.
+the account that owns the `svustatus` Pages project, `svustatus-cron` Worker,
+and `svustatus-og-renderer` Worker.
 Do not commit Cloudflare tokens to `.env` files.
 
 ## Fonts

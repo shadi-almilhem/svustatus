@@ -1,11 +1,9 @@
 import { isServiceRouteId } from "../../src/lib/service-routes";
-import { type PagesEnv } from "../_shared/status";
-
-const DEFAULT_OG_IMAGE_BASE_URL =
-  "https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/og";
+import { renderOgSvg } from "../_shared/og-image";
+import { getMonitor, getSiteOrigin, readStatusPayload, type PagesEnv } from "../_shared/status";
 
 type OgPagesEnv = PagesEnv & {
-  PUBLIC_OG_IMAGE_BASE_URL?: string;
+  OG_RENDERER: Fetcher;
 };
 
 export const onRequestGet: PagesFunction<OgPagesEnv> = async (context) =>
@@ -20,42 +18,60 @@ async function createOgImageResponse(
 ) {
   const rawPath = context.params.path;
   const path = Array.isArray(rawPath) ? rawPath.join("/") : rawPath;
-  const monitorId = path?.replace(/\.png$/i, "").toLowerCase() ?? "";
+  const match = path?.match(/^([a-z0-9-]+)\.(jpe?g|png)$/i);
+  const monitorId = match?.[1]?.toLowerCase() ?? "";
 
   if (!isServiceRouteId(monitorId)) {
     return new Response("Unknown service", { status: 404 });
   }
 
-  const baseUrl = context.env.PUBLIC_OG_IMAGE_BASE_URL || DEFAULT_OG_IMAGE_BASE_URL;
-  const upstreamUrl = new URL(`${baseUrl.replace(/\/$/, "")}/${monitorId}.png`);
-  const version = new URL(context.request.url).searchParams.get("v");
-  if (version) upstreamUrl.searchParams.set("v", version);
-
-  try {
-    const upstream = await fetch(upstreamUrl, {
-      headers: { accept: "image/png" },
-    });
-    if (upstream.ok && upstream.headers.get("content-type")?.includes("image/png")) {
-      return imageResponse(isHead ? null : upstream.body, upstream.headers);
-    }
-  } catch {
-    // The bundled fallback below keeps previews available if GitHub is unreachable.
+  if (match?.[2]?.toLowerCase() === "png") {
+    const redirectUrl = new URL(context.request.url);
+    redirectUrl.pathname = `/og/${monitorId}.jpg`;
+    return Response.redirect(redirectUrl.toString(), 308);
   }
 
-  const fallbackUrl = new URL(`/og-static/${monitorId}.png`, context.request.url);
-  const fallback = await context.env.ASSETS.fetch(fallbackUrl);
-  if (!fallback.ok) return new Response("OG image is unavailable", { status: 503 });
-  return imageResponse(isHead ? null : fallback.body, fallback.headers);
-}
+  if (isHead) {
+    return new Response(null, {
+      headers: {
+        "content-type": "image/jpeg",
+        "cache-control": "public, max-age=60, must-revalidate",
+        "x-content-type-options": "nosniff",
+      },
+    });
+  }
 
-function imageResponse(body: BodyInit | null, sourceHeaders: Headers) {
-  const headers = new Headers();
-  headers.set("content-type", sourceHeaders.get("content-type") || "image/png");
-  headers.set(
-    "cache-control",
-    "no-transform, public, max-age=60, s-maxage=300, stale-while-revalidate=3600",
+  const payload = await readStatusPayload(context.env, context.request);
+  const monitor = getMonitor(payload, monitorId);
+  if (!monitor) return new Response("Unknown service", { status: 404 });
+
+  const svg = renderOgSvg(
+    monitor,
+    payload.generatedAt,
+    getSiteOrigin(context.env, context.request),
   );
-  const contentLength = sourceHeaders.get("content-length");
-  if (contentLength) headers.set("content-length", contentLength);
-  return new Response(body, { status: 200, headers });
+  const renderResponse = await context.env.OG_RENDERER.fetch(
+    new Request("https://og-renderer.internal/render", {
+      method: "POST",
+      headers: { "content-type": "image/svg+xml; charset=utf-8" },
+      body: svg,
+    }),
+  );
+
+  if (!renderResponse.ok) {
+    console.error(
+      JSON.stringify({
+        message: "OG renderer returned an error",
+        monitorId,
+        status: renderResponse.status,
+      }),
+    );
+    return new Response("OG image is unavailable", { status: 503 });
+  }
+
+  const headers = new Headers(renderResponse.headers);
+  headers.set("content-type", "image/jpeg");
+  headers.set("cache-control", "public, max-age=60, must-revalidate");
+  headers.set("x-content-type-options", "nosniff");
+  return new Response(renderResponse.body, { status: 200, headers });
 }

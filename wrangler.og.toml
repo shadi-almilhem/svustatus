@@ -1,0 +1,11 @@
+name = "svustatus-og-renderer"
+main = "workers/og-renderer.ts"
+compatibility_date = "2026-08-02"
+workers_dev = false
+
+[images]
+binding = "IMAGES"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
