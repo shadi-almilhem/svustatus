@@ -87,12 +87,30 @@ jobs:
             rm -rf ./*
           fi
 
+      - name: Export Cloudflare measurements
+        if: steps.freshness.outputs.should_run == 'true'
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if ! npx --yes wrangler@4.118.0 d1 execute svustatus-watch \
+            --remote \
+            --config app/wrangler.status.toml \
+            --command "SELECT monitor_id, checked_at, url, ok, status, latency_ms, attempt, error FROM status_checks WHERE checked_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-46 days') ORDER BY checked_at" \
+            --json > status-data/cloudflare-checks.json; then
+            echo "::warning::Cloudflare measurements could not be exported; retaining existing history."
+            echo '[]' > status-data/cloudflare-checks.json
+          fi
+
       - name: Run status checks
         if: steps.freshness.outputs.should_run == 'true'
         run: |
           node app/scripts/check-status.mjs \
             --config app/monitor.config.json \
             --input status-data/status.json \
+            --history-input status-data/cloudflare-checks.json \
             --output status-data/status.json
           node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('status-data/status.json','utf8')); if (!Array.isArray(data.monitors) || data.monitors.length !== 5) throw new Error('Expected 5 monitors in status.json');"
 

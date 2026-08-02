@@ -12,6 +12,8 @@ describe("OG image SVG", () => {
       uptimePercent: 99.84,
       uptimeLabel: "99.84%",
       latest: {
+        id: "requests",
+        url: "https://requests.svuonline.org",
         checkedAt: "2026-08-02T06:46:52.746Z",
         ok: false,
         status: null,
@@ -38,6 +40,8 @@ describe("OG image SVG", () => {
       uptimePercent: 100,
       uptimeLabel: "100%",
       latest: {
+        id: "lms",
+        url: "https://lms.svuonline.org",
         checkedAt: "2026-08-02T06:46:52.746Z",
         ok: true,
         status: 200,

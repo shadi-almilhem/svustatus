@@ -7,8 +7,6 @@ import {
 import { timingSafeEqual } from "node:crypto";
 import monitorConfig from "../monitor.config.json";
 import {
-  buildStatusPayload,
-  mergeStatusHistories,
   normalizeConfig,
   runMonitorChecks,
 } from "../scripts/status-core.mjs";
@@ -23,11 +21,10 @@ import {
 } from "../scripts/status-schedule.mjs";
 
 const STATUS_KV_KEY = "status:latest";
+const STATUS_LIVE_KEY = "status:live";
 const STATUS_GENERATED_AT_KEY = "status:generated-at";
 const STATUS_RUN_KEY = "status:run:last";
 const DEFAULT_SITE_URL = "https://svustatus.pages.dev";
-const DEFAULT_STATUS_DATA_URL =
-  "https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/status.json";
 
 type Env = {
   STATUS_KV?: KVNamespace;
@@ -43,6 +40,22 @@ type Env = {
 type StatusPayload = {
   generatedAt: string | null;
   monitors: MonitorStatus[];
+};
+
+type CheckResult = {
+  id: string;
+  url: string;
+  checkedAt: string;
+  ok: boolean;
+  status: number | null;
+  latencyMs: number | null;
+  attempt: number;
+  error?: string;
+};
+
+type LiveStatusPayload = {
+  generatedAt: string;
+  results: CheckResult[];
 };
 
 type StatusRun = {
@@ -192,40 +205,87 @@ async function runRecordedStatusCheck(
 }
 
 export async function runScheduledStatusCheck(env: Env) {
-  if (!env.STATUS_KV) {
-    throw new Error("STATUS_KV binding is required for scheduled status checks.");
+  if (!env.STATUS_KV || !env.WATCH_DB) {
+    throw new Error("STATUS_KV and WATCH_DB bindings are required for status checks.");
   }
 
-  const [previousPayload, fallbackPayload] = await Promise.all([
-    env.STATUS_KV.get<StatusPayload>(STATUS_KV_KEY, "json"),
-    readFallbackStatusPayload(env),
-  ]);
-  const config = normalizeConfig(monitorConfig);
-  const { results } = await runMonitorChecks(config);
-  const mergedHistory = mergeStatusHistories(
-    [fallbackPayload, previousPayload],
-    config.monitors,
+  const previousLive = await env.STATUS_KV.get<LiveStatusPayload>(
+    STATUS_LIVE_KEY,
+    "json",
   );
-  const payload = buildStatusPayload(
-    config,
-    { history: mergedHistory },
+  const config = normalizeConfig(monitorConfig);
+  const { results }: { results: CheckResult[] } = await runMonitorChecks(config);
+  const payload: LiveStatusPayload = {
+    generatedAt: new Date().toISOString(),
     results,
-    new Date(),
-  ) as StatusPayload;
+  };
 
-  await env.STATUS_KV.put(STATUS_KV_KEY, JSON.stringify(payload));
-  if (payload.generatedAt) {
-    await env.STATUS_KV.put(STATUS_GENERATED_AT_KEY, payload.generatedAt);
-  }
+  await persistStatusChecks(env.WATCH_DB, results);
+  await env.STATUS_KV.put(STATUS_LIVE_KEY, JSON.stringify(payload));
+  await env.STATUS_KV.put(STATUS_GENERATED_AT_KEY, payload.generatedAt);
 
-  const recoveredMonitorIds = getRecoveredMonitorIds(previousPayload, payload);
-  const notified = await notifyRecoveredWatchers(env, previousPayload, payload, recoveredMonitorIds);
+  const previousPayload = previousLive
+    ? toNotificationPayload(previousLive, config.monitors)
+    : null;
+  const notificationPayload = toNotificationPayload(payload, config.monitors);
+  const recoveredMonitorIds = getRecoveredMonitorIds(
+    previousPayload,
+    notificationPayload,
+  );
+  const notified = await notifyRecoveredWatchers(
+    env,
+    previousPayload,
+    notificationPayload,
+    recoveredMonitorIds,
+  );
 
   return {
     ok: true,
     generatedAt: payload.generatedAt,
     recoveredMonitorIds,
     notified,
+  };
+}
+
+async function persistStatusChecks(database: D1Database, results: CheckResult[]) {
+  const statements = results.map((result) =>
+    database
+      .prepare(
+        `INSERT OR REPLACE INTO status_checks
+         (monitor_id, checked_at, url, ok, status, latency_ms, attempt, error)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      )
+      .bind(
+        result.id,
+        result.checkedAt,
+        result.url,
+        result.ok ? 1 : 0,
+        result.status,
+        result.latencyMs,
+        result.attempt,
+        result.error ?? null,
+      ),
+  );
+  statements.push(
+    database
+      .prepare("DELETE FROM status_checks WHERE checked_at < ?")
+      .bind(new Date(Date.now() - 46 * 24 * 60 * 60 * 1000).toISOString()),
+  );
+  await database.batch(statements);
+}
+
+function toNotificationPayload(
+  livePayload: LiveStatusPayload,
+  monitors: Array<{ id: string; name: { en: string; ar: string } }>,
+): StatusPayload {
+  const resultsById = new Map(livePayload.results.map((result) => [result.id, result]));
+  return {
+    generatedAt: livePayload.generatedAt,
+    monitors: monitors.map((monitor) => ({
+      ...monitor,
+      currentStatus: resultsById.get(monitor.id)?.ok ? "success" : "error",
+      uptimeLabel: "--%",
+    })),
   };
 }
 
@@ -249,44 +309,6 @@ function isAuthorizedCronRequest(request: Request, secret: string | undefined) {
     provided.byteLength === expected.byteLength &&
     timingSafeEqual(provided, expected)
   );
-}
-
-async function readFallbackStatusPayload(env: Env) {
-  const url = env.PUBLIC_STATUS_DATA_URL || DEFAULT_STATUS_DATA_URL;
-  const controller = new AbortController();
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-
-  try {
-    return await Promise.race([
-      (async () => {
-        const response = await fetch(
-          `${url}${url.includes("?") ? "&" : "?"}ts=${Date.now()}`,
-          { signal: controller.signal },
-        );
-        if (!response.ok) {
-          void response.body?.cancel();
-          return null;
-        }
-        return (await response.json()) as StatusPayload;
-      })(),
-      new Promise<never>((_, reject) => {
-        timeout = setTimeout(() => {
-          controller.abort();
-          reject(new Error("Historical status fallback timed out"));
-        }, 5_000);
-      }),
-    ]);
-  } catch (error) {
-    console.warn(
-      JSON.stringify({
-        message: "Historical status fallback could not be read",
-        error: error instanceof Error ? error.message : String(error),
-      }),
-    );
-    return null;
-  } finally {
-    if (timeout) clearTimeout(timeout);
-  }
 }
 
 async function notifyRecoveredWatchers(

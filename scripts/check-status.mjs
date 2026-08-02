@@ -1,17 +1,41 @@
 #!/usr/bin/env node
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { buildStatusPayload, normalizeConfig, runMonitorChecks } from "./status-core.mjs";
+import {
+  buildStatusPayload,
+  mergeStatusHistories,
+  normalizeConfig,
+  runMonitorChecks,
+} from "./status-core.mjs";
+import { historyFromD1Export } from "./status-d1.mjs";
 
 const args = parseArgs(process.argv.slice(2));
 const configPath = resolve(args.config ?? "monitor.config.json");
 const inputPath = resolve(args.input ?? "status.json");
 const outputPath = resolve(args.output ?? "status.json");
+const historyInputPath = args["history-input"]
+  ? resolve(args["history-input"])
+  : null;
 
 const config = normalizeConfig(await readJson(configPath));
 const previousPayload = await readJson(inputPath, { optional: true });
+const d1Export = historyInputPath
+  ? await readJson(historyInputPath, { optional: true })
+  : null;
+const d1Payload = d1Export
+  ? { history: historyFromD1Export(d1Export, config.monitors) }
+  : null;
+const mergedHistory = mergeStatusHistories(
+  [previousPayload, d1Payload],
+  config.monitors,
+);
 const { results } = await runMonitorChecks(config);
-const payload = buildStatusPayload(config, previousPayload, results, new Date());
+const payload = buildStatusPayload(
+  config,
+  { history: mergedHistory },
+  results,
+  new Date(),
+);
 
 await mkdir(dirname(outputPath), { recursive: true });
 await writeFile(`${outputPath}.tmp`, `${JSON.stringify(payload, null, 2)}\n`);

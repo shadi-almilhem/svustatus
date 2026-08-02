@@ -1,6 +1,7 @@
 import { getMonitorIdFromPath, getMonitorPath } from "../../src/lib/service-routes";
 
 export const STATUS_KV_KEY = "status:latest";
+export const STATUS_LIVE_KEY = "status:live";
 export const DEFAULT_SITE_URL = "https://svustatus.pages.dev";
 export const DEFAULT_STATUS_DATA_URL =
   "https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/status.json";
@@ -10,6 +11,17 @@ export type Locale = "en" | "ar";
 export type LocalizedText = Record<Locale, string>;
 export type MonitorStatusType = "success" | "degraded" | "error" | "info" | "empty";
 
+export type StatusCheckResult = {
+  id: string;
+  url: string;
+  checkedAt: string;
+  ok: boolean;
+  status: number | null;
+  latencyMs: number | null;
+  attempt: number;
+  error?: string;
+};
+
 export type StatusPayload = {
   version: number;
   generatedAt: string | null;
@@ -17,7 +29,7 @@ export type StatusPayload = {
   historyDays: number;
   monitors: MonitorStatus[];
   incidents: unknown[];
-  history: Record<string, Array<{ checkedAt?: string }>>;
+  history: Record<string, StatusCheckResult[]>;
 };
 
 export type MonitorStatus = {
@@ -27,16 +39,15 @@ export type MonitorStatus = {
   currentStatus: MonitorStatusType;
   uptimePercent: number | null;
   uptimeLabel: string;
-  latest: {
-    checkedAt: string;
-    ok: boolean;
-    status: number | null;
-    latencyMs: number | null;
-    attempt: number;
-  } | null;
+  latest: StatusCheckResult | null;
   daily?: Array<{
     card?: Array<{ status?: MonitorStatusType }>;
   }>;
+};
+
+type LiveStatusPayload = {
+  generatedAt: string;
+  results: StatusCheckResult[];
 };
 
 export type PagesEnv = {
@@ -49,22 +60,62 @@ export type PagesEnv = {
 };
 
 export async function readStatusPayload(env: PagesEnv, request: Request) {
-  const kvPayload = await env.STATUS_KV?.get<StatusPayload>(STATUS_KV_KEY, "json");
+  const [kvPayload, livePayload] = await Promise.all([
+    env.STATUS_KV?.get<StatusPayload>(STATUS_KV_KEY, "json"),
+    env.STATUS_KV?.get<LiveStatusPayload>(STATUS_LIVE_KEY, "json"),
+  ]);
   if (isPayloadFresh(kvPayload) && hasExpectedDailyCoverage(kvPayload)) {
-    return kvPayload;
+    return applyLiveStatus(kvPayload, livePayload);
   }
 
   const fallbackPayload = await readFallbackStatusPayload(env);
   const bestRemotePayload = getBestPayload([kvPayload, fallbackPayload]);
-  if (bestRemotePayload) return bestRemotePayload;
+  if (bestRemotePayload) return applyLiveStatus(bestRemotePayload, livePayload);
 
   const assetUrl = new URL("/status.json", request.url);
   const assetResponse = await env.ASSETS.fetch(assetUrl);
   if (assetResponse.ok) {
-    return (await assetResponse.json()) as StatusPayload;
+    return applyLiveStatus(
+      (await assetResponse.json()) as StatusPayload,
+      livePayload,
+    );
   }
 
   throw new Error("Status data is unavailable.");
+}
+
+function applyLiveStatus(
+  payload: StatusPayload,
+  livePayload: LiveStatusPayload | null | undefined,
+) {
+  const liveTime = livePayload?.generatedAt
+    ? Date.parse(livePayload.generatedAt)
+    : Number.NaN;
+  if (!livePayload || !Number.isFinite(liveTime) || liveTime <= getPayloadTime(payload)) {
+    return payload;
+  }
+
+  const resultsById = new Map(livePayload.results.map((result) => [result.id, result]));
+  for (const monitor of payload.monitors) {
+    const result = resultsById.get(monitor.id);
+    if (!result) continue;
+    monitor.latest = result;
+    monitor.currentStatus = result.ok ? "success" : "error";
+
+    const history = payload.history[monitor.id] ?? [];
+    if (!history.some((record) => record.checkedAt === result.checkedAt)) {
+      history.push(result);
+      payload.history[monitor.id] = history;
+      const successCount = history.filter((record) => record.ok).length;
+      const uptimePercent = Math.round((successCount / history.length) * 10_000) / 100;
+      monitor.uptimePercent = uptimePercent;
+      monitor.uptimeLabel = Number.isInteger(uptimePercent)
+        ? `${uptimePercent}%`
+        : `${uptimePercent.toFixed(2)}%`;
+    }
+  }
+  payload.generatedAt = livePayload.generatedAt;
+  return payload;
 }
 
 async function readFallbackStatusPayload(env: PagesEnv) {

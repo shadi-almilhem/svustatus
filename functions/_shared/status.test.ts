@@ -1,5 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { readStatusPayload, STATUS_KV_KEY, type PagesEnv } from "./status";
+import {
+  readStatusPayload,
+  STATUS_KV_KEY,
+  STATUS_LIVE_KEY,
+  type PagesEnv,
+} from "./status";
 
 describe("readStatusPayload", () => {
   beforeEach(() => {
@@ -70,12 +75,51 @@ describe("readStatusPayload", () => {
 
     expect(result.generatedAt).toBe(kvPayload.generatedAt);
   });
+
+  it("overlays a lightweight live check onto the historical payload", async () => {
+    const kvPayload = payload("2026-05-25T14:00:00.000Z");
+    const livePayload = {
+      generatedAt: "2026-05-25T15:00:00.000Z",
+      results: [
+        {
+          id: "service",
+          url: "https://example.com",
+          checkedAt: "2026-05-25T15:00:00.000Z",
+          ok: false,
+          status: 503,
+          latencyMs: 420,
+          attempt: 2,
+        },
+      ],
+    };
+    vi.setSystemTime(new Date("2026-05-25T15:05:00.000Z"));
+
+    const result = await readStatusPayload(
+      env({ kvPayload, livePayload }),
+      new Request("https://svustatus.pages.dev/api/status"),
+    );
+
+    expect(result.generatedAt).toBe(livePayload.generatedAt);
+    expect(result.monitors[0].currentStatus).toBe("error");
+    expect(result.monitors[0].latest).toEqual(livePayload.results[0]);
+    expect(result.history.service.at(-1)).toEqual(livePayload.results[0]);
+  });
 });
 
-function env({ kvPayload }: { kvPayload: ReturnType<typeof payload> | null }) {
+function env({
+  kvPayload,
+  livePayload = null,
+}: {
+  kvPayload: ReturnType<typeof payload> | null;
+  livePayload?: object | null;
+}) {
   return {
     STATUS_KV: {
-      get: vi.fn(async (key: string) => (key === STATUS_KV_KEY ? kvPayload : null)),
+      get: vi.fn(async (key: string) => {
+        if (key === STATUS_KV_KEY) return kvPayload;
+        if (key === STATUS_LIVE_KEY) return livePayload;
+        return null;
+      }),
     },
     ASSETS: {
       fetch: vi.fn(async () => Response.json(payload("2026-05-05T16:31:59.674Z"))),
