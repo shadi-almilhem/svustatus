@@ -66,7 +66,7 @@ async function createOgImageResponse(
         rendererError,
       }),
     );
-    return new Response(`OG image is unavailable: ${rendererError}`, { status: 503 });
+    return new Response("OG image is temporarily unavailable", { status: 503 });
   }
 
   const headers = new Headers(renderResponse.headers);

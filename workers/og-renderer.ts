@@ -109,9 +109,7 @@ export default {
           code,
         }),
       );
-      return new Response(`JPEG conversion failed (${code}): ${message}`, {
-        status: 502,
-      });
+      return new Response("JPEG conversion failed", { status: 502 });
     }
   },
 } satisfies ExportedHandler<Env>;
