@@ -99,22 +99,38 @@ function App() {
 
   useEffect(() => {
     const controller = new AbortController();
+    let hasSuccessfulLoad = false;
 
-    async function loadStatus() {
+    async function loadStatus(isInitialLoad = false) {
       try {
-        setIsLoading(true);
+        if (isInitialLoad) setIsLoading(true);
+        const nextPayload = await fetchStatusPayload(controller.signal);
+        if (controller.signal.aborted) return;
+        hasSuccessfulLoad = true;
+        setPayload(nextPayload);
         setError(null);
-        setPayload(await fetchStatusPayload(controller.signal));
       } catch (loadError) {
         if (controller.signal.aborted) return;
-        setError(loadError instanceof Error ? loadError.message : "Unknown error");
+        if (!hasSuccessfulLoad) {
+          setError(loadError instanceof Error ? loadError.message : "Unknown error");
+        }
       } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
+        if (isInitialLoad && !controller.signal.aborted) setIsLoading(false);
       }
     }
 
-    loadStatus();
-    return () => controller.abort();
+    void loadStatus(true);
+    const refreshInterval = window.setInterval(() => void loadStatus(), 60_000);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") void loadStatus();
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      controller.abort();
+      window.clearInterval(refreshInterval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   useEffect(() => {

@@ -68,17 +68,62 @@ export const STATUS_DATA_URL =
   import.meta.env.VITE_STATUS_DATA_URL?.trim() ||
   (import.meta.env.DEV ? "/status.json" : "/api/status");
 
-export async function fetchStatusPayload(signal?: AbortSignal) {
-  const response = await fetch(STATUS_DATA_URL, {
-    signal,
-    cache: "no-store",
-  });
+const STATUS_RETRY_DELAYS_MS = [0, 400, 1_200];
 
-  if (!response.ok) {
-    throw new Error(`Status data request failed with ${response.status}.`);
+export async function fetchStatusPayload(signal?: AbortSignal) {
+  let latestError: unknown;
+
+  for (const delayMs of STATUS_RETRY_DELAYS_MS) {
+    if (delayMs > 0) await abortableDelay(delayMs, signal);
+
+    try {
+      const response = await fetch(STATUS_DATA_URL, {
+        signal,
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        const error = new Error(`Status data request failed with ${response.status}.`);
+        if (response.status < 500) throw error;
+        latestError = error;
+        continue;
+      }
+
+      const payload = (await response.json()) as StatusPayload;
+      if (!Array.isArray(payload.monitors) || !payload.history) {
+        latestError = new Error("Status data response is incomplete.");
+        continue;
+      }
+
+      return payload;
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      latestError = error;
+    }
   }
 
-  return (await response.json()) as StatusPayload;
+  throw latestError instanceof Error
+    ? latestError
+    : new Error("Status data is unavailable.");
+}
+
+function abortableDelay(delayMs: number, signal?: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(signal.reason);
+      return;
+    }
+
+    const timeout = globalThis.setTimeout(resolve, delayMs);
+    signal?.addEventListener(
+      "abort",
+      () => {
+        globalThis.clearTimeout(timeout);
+        reject(signal.reason);
+      },
+      { once: true },
+    );
+  });
 }
 
 export function getSystemStatus(monitors: MonitorStatus[]) {
