@@ -97,14 +97,14 @@ Production uses three Cloudflare pieces:
 
 - Cloudflare Pages + Pages Functions for the React app, `/api/status`, `/api/watch`, `/api/push-config`, service route meta injection, and `/og/<service>.jpg`.
 - A separate Worker from `wrangler.status.toml` for the `5 * * * *` hourly checks.
-- A private service-bound Worker from `wrangler.og.toml` that converts the
-  request-generated SVG card into a real JPEG through Cloudflare Images.
+- A private service-bound Worker from `wrangler.og.toml` that renders the
+  request-generated card as a real JPEG.
 
 OG cards are generated on demand. No generated card files are stored in the
 repository, KV, R2, or the `status-data` branch. The Pages Function reads the
-current monitor data, builds a 1200 x 630 SVG in memory, and calls the private
-renderer through the `OG_RENDERER` service binding. Cloudflare Images performs
-the SVG-to-JPEG conversion outside the Pages Function CPU budget.
+current monitor data and calls the private renderer through the `OG_RENDERER`
+service binding. The renderer converts text to font outlines, rasterizes the
+card in memory, and uses Cloudflare Images for the final 1200 x 630 JPEG output.
 
 On every run, the Worker merges the public `status-data` branch with KV before
 adding the new measurement. That preserves older checks collected by the GitHub

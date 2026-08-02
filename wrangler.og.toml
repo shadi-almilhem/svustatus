@@ -6,6 +6,11 @@ workers_dev = false
 [images]
 binding = "IMAGES"
 
+[[rules]]
+type = "Data"
+globs = ["**/*.ttf"]
+fallthrough = true
+
 [observability]
 enabled = true
 head_sampling_rate = 1

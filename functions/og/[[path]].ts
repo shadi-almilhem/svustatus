@@ -1,5 +1,4 @@
 import { isServiceRouteId } from "../../src/lib/service-routes";
-import { renderOgSvg } from "../_shared/og-image";
 import { getMonitor, getSiteOrigin, readStatusPayload, type PagesEnv } from "../_shared/status";
 
 type OgPagesEnv = PagesEnv & {
@@ -45,16 +44,15 @@ async function createOgImageResponse(
   const monitor = getMonitor(payload, monitorId);
   if (!monitor) return new Response("Unknown service", { status: 404 });
 
-  const svg = renderOgSvg(
-    monitor,
-    payload.generatedAt,
-    getSiteOrigin(context.env, context.request),
-  );
   const renderResponse = await context.env.OG_RENDERER.fetch(
     new Request("https://og-renderer.internal/render", {
       method: "POST",
-      headers: { "content-type": "image/svg+xml; charset=utf-8" },
-      body: svg,
+      headers: { "content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+        monitor,
+        generatedAt: payload.generatedAt,
+        siteUrl: getSiteOrigin(context.env, context.request),
+      }),
     }),
   );
 
