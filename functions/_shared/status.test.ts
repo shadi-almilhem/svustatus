@@ -89,7 +89,12 @@ function payload(generatedAt: string, dateKeys = ["2026-05-24", "2026-05-25"]) {
     generatedAt,
     timezone: "Asia/Dubai",
     historyDays: 2,
-    monitors: [{ id: "service" }],
+    monitors: [
+      {
+        id: "service",
+        daily: dateKeys.map(() => ({ card: [{ status: "success" }] })),
+      },
+    ],
     incidents: [],
     history: {
       service: dateKeys.map((dateKey) => ({

@@ -6,6 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 SITE_URL = "https://svustatus.pages.dev"
 PUBLIC_STATUS_DATA_URL = "https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/status.json"
+PUBLIC_OG_IMAGE_BASE_URL = "https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/og"
 VAPID_PUBLIC_KEY = "BFQtVUqxU1HC-qEML8zeyXZrEFqR6is0ZFJaAanRxoqevnE5mEwIoHN0C1tUpXf4C7fmc-GrFQmLgQWjxGuDNfs"
 
 [[kv_namespaces]]

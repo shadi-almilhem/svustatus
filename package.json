@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "check:status": "node scripts/check-status.mjs --input public/status.json --output public/status.json",
+    "generate:og": "node scripts/generate-og-images.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run"
@@ -14,7 +15,6 @@
   "dependencies": {
     "@base-ui/react": "^1.4.1",
     "@block65/webcrypto-web-push": "^1.0.2",
-    "@cloudflare/pages-plugin-vercel-og": "^0.1.2",
     "@date-fns/utc": "^2.1.0",
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-hover-card": "^1.1.15",
@@ -46,6 +46,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
     "shadcn": "^4.7.0",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4.2.4",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",

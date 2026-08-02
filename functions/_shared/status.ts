@@ -34,6 +34,9 @@ export type MonitorStatus = {
     latencyMs: number | null;
     attempt: number;
   } | null;
+  daily?: Array<{
+    card?: Array<{ status?: MonitorStatusType }>;
+  }>;
 };
 
 export type PagesEnv = {
@@ -100,27 +103,21 @@ function getDailyCoverage(payload: StatusPayload | null | undefined) {
   if (!payload || payload.monitors.length === 0) return 0;
 
   const coverageByMonitor = payload.monitors.map((monitor) => {
+    if (monitor.daily) {
+      return monitor.daily.filter((day) =>
+        day.card?.some((item) => item.status && item.status !== "empty"),
+      ).length;
+    }
+
     const dates = new Set<string>();
     for (const record of payload.history[monitor.id] ?? []) {
       if (!record.checkedAt || !Number.isFinite(Date.parse(record.checkedAt))) continue;
-      dates.add(getHistoryDateKey(record.checkedAt, payload.timezone));
+      dates.add(record.checkedAt.slice(0, 10));
     }
     return dates.size;
   });
 
   return Math.min(...coverageByMonitor);
-}
-
-function getHistoryDateKey(checkedAt: string, timezone: string) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: timezone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date(checkedAt));
-  const part = (type: Intl.DateTimeFormatPartTypes) =>
-    parts.find((item) => item.type === type)?.value;
-  return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
 function isPayloadFresh(payload: StatusPayload | null | undefined) {
