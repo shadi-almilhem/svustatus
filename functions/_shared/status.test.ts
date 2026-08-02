@@ -12,7 +12,7 @@ describe("readStatusPayload", () => {
   });
 
   it("returns fresh KV data without fetching the public fallback", async () => {
-    const kvPayload = payload("2026-05-25T14:00:00.000Z");
+    const kvPayload = payload("2026-05-25T14:00:00.000Z", ["2026-05-24", "2026-05-25"]);
     vi.setSystemTime(new Date("2026-05-25T14:30:00.000Z"));
     const fetchMock = vi.spyOn(globalThis, "fetch");
 
@@ -23,6 +23,23 @@ describe("readStatusPayload", () => {
 
     expect(result.generatedAt).toBe(kvPayload.generatedAt);
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("prefers fuller fallback history over a newer sparse KV snapshot", async () => {
+    const kvPayload = payload("2026-05-25T14:30:00.000Z", ["2026-05-25"]);
+    const fallbackPayload = payload("2026-05-25T14:20:00.000Z", [
+      "2026-05-24",
+      "2026-05-25",
+    ]);
+    vi.setSystemTime(new Date("2026-05-25T14:45:00.000Z"));
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json(fallbackPayload));
+
+    const result = await readStatusPayload(
+      env({ kvPayload }),
+      new Request("https://svustatus.pages.dev/api/status"),
+    );
+
+    expect(result.generatedAt).toBe(fallbackPayload.generatedAt);
   });
 
   it("uses the public fallback when KV is stale and fallback is newer", async () => {
@@ -66,14 +83,18 @@ function env({ kvPayload }: { kvPayload: ReturnType<typeof payload> | null }) {
   } as unknown as PagesEnv;
 }
 
-function payload(generatedAt: string) {
+function payload(generatedAt: string, dateKeys = ["2026-05-24", "2026-05-25"]) {
   return {
     version: 1,
     generatedAt,
     timezone: "Asia/Dubai",
-    historyDays: 45,
-    monitors: [],
+    historyDays: 2,
+    monitors: [{ id: "service" }],
     incidents: [],
-    history: {},
+    history: {
+      service: dateKeys.map((dateKey) => ({
+        checkedAt: `${dateKey}T08:00:00.000Z`,
+      })),
+    },
   };
 }

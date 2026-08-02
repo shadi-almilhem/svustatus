@@ -17,7 +17,7 @@ export type StatusPayload = {
   historyDays: number;
   monitors: MonitorStatus[];
   incidents: unknown[];
-  history: Record<string, unknown[]>;
+  history: Record<string, Array<{ checkedAt?: string }>>;
 };
 
 export type MonitorStatus = {
@@ -47,11 +47,13 @@ export type PagesEnv = {
 
 export async function readStatusPayload(env: PagesEnv, request: Request) {
   const kvPayload = await env.STATUS_KV?.get<StatusPayload>(STATUS_KV_KEY, "json");
-  if (isPayloadFresh(kvPayload)) return kvPayload;
+  if (isPayloadFresh(kvPayload) && hasExpectedDailyCoverage(kvPayload)) {
+    return kvPayload;
+  }
 
   const fallbackPayload = await readFallbackStatusPayload(env);
-  const freshestRemotePayload = getFreshestPayload([kvPayload, fallbackPayload]);
-  if (freshestRemotePayload) return freshestRemotePayload;
+  const bestRemotePayload = getBestPayload([kvPayload, fallbackPayload]);
+  if (bestRemotePayload) return bestRemotePayload;
 
   const assetUrl = new URL("/status.json", request.url);
   const assetResponse = await env.ASSETS.fetch(assetUrl);
@@ -74,16 +76,51 @@ async function readFallbackStatusPayload(env: PagesEnv) {
   }
 }
 
-function getFreshestPayload(payloads: Array<StatusPayload | null | undefined>) {
+function getBestPayload(payloads: Array<StatusPayload | null | undefined>) {
   const datedPayloads = payloads
-    .map((payload) => ({ payload, time: getPayloadTime(payload) }))
+    .map((payload) => ({
+      payload,
+      coverage: getDailyCoverage(payload),
+      time: getPayloadTime(payload),
+    }))
     .filter(
-      (entry): entry is { payload: StatusPayload; time: number } =>
+      (entry): entry is { payload: StatusPayload; coverage: number; time: number } =>
         Boolean(entry.payload) && Number.isFinite(entry.time),
     );
 
-  datedPayloads.sort((a, b) => b.time - a.time);
+  datedPayloads.sort((a, b) => b.coverage - a.coverage || b.time - a.time);
   return datedPayloads[0]?.payload ?? null;
+}
+
+function hasExpectedDailyCoverage(payload: StatusPayload) {
+  return getDailyCoverage(payload) >= payload.historyDays;
+}
+
+function getDailyCoverage(payload: StatusPayload | null | undefined) {
+  if (!payload || payload.monitors.length === 0) return 0;
+
+  const coverageByMonitor = payload.monitors.map((monitor) => {
+    const dates = new Set<string>();
+    for (const record of payload.history[monitor.id] ?? []) {
+      if (!record.checkedAt || !Number.isFinite(Date.parse(record.checkedAt))) continue;
+      dates.add(getHistoryDateKey(record.checkedAt, payload.timezone));
+    }
+    return dates.size;
+  });
+
+  return Math.min(...coverageByMonitor);
+}
+
+function getHistoryDateKey(checkedAt: string, timezone: string) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date(checkedAt));
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value;
+  return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
 function isPayloadFresh(payload: StatusPayload | null | undefined) {
