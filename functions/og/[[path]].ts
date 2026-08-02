@@ -59,14 +59,16 @@ async function createOgImageResponse(
   );
 
   if (!renderResponse.ok) {
+    const rendererError = (await renderResponse.text()).slice(0, 256);
     console.error(
       JSON.stringify({
         message: "OG renderer returned an error",
         monitorId,
         status: renderResponse.status,
+        rendererError,
       }),
     );
-    return new Response("OG image is unavailable", { status: 503 });
+    return new Response(`OG image is unavailable: ${rendererError}`, { status: 503 });
   }
 
   const headers = new Headers(renderResponse.headers);

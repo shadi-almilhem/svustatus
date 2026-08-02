@@ -38,13 +38,21 @@ export default {
 
       return new Response(image.body, { status: image.status, headers });
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const code =
+        typeof error === "object" && error && "code" in error
+          ? String(error.code)
+          : "unknown";
       console.error(
         JSON.stringify({
           message: "OG JPEG conversion failed",
-          error: error instanceof Error ? error.message : String(error),
+          error: message,
+          code,
         }),
       );
-      return new Response("JPEG conversion failed", { status: 502 });
+      return new Response(`JPEG conversion failed (${code}): ${message}`, {
+        status: 502,
+      });
     }
   },
 } satisfies ExportedHandler<Env>;
