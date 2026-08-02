@@ -19,7 +19,11 @@ import {
 } from "@/components/blocks/status-layout";
 import { StatusLocaleSwitcher } from "@/components/blocks/status-locale-switcher";
 import { StatusBlocksI18nProvider } from "@/components/blocks/status-i18n";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
+import { getMonitorIdFromPath, getMonitorPath } from "@/lib/service-routes";
 import { copy, getInitialLocale, locales, makeStatusLabels } from "@/lib/status-i18n";
 import { cn } from "@/lib/utils";
 import {
@@ -40,7 +44,9 @@ import {
 import {
   Activity,
   AlertTriangle,
+  BellRing,
   Clock3,
+  Copy,
   ExternalLink,
   GitBranch,
   LoaderCircle,
@@ -52,6 +58,7 @@ import {
 import { GithubLogo } from "@phosphor-icons/react/GithubLogo";
 import { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
+import { toast } from "sonner";
 
 const REPOSITORY_URL = "https://github.com/shadi-almilhem/svustatus";
 const AUTHOR_URL = "https://shadialmilhem.com";
@@ -78,6 +85,8 @@ function App() {
     () => getOverallUptime(payload?.monitors ?? [], locale),
     [payload?.monitors, locale],
   );
+  const [selectedMonitorId] = useState(getInitialSelectedMonitorId);
+  const isStatusStale = isPayloadStale(payload?.generatedAt);
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -108,9 +117,17 @@ function App() {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    if (!selectedMonitorId || isLoading) return;
+    document
+      .getElementById(`service-${selectedMonitorId}`)
+      ?.scrollIntoView({ block: "center" });
+  }, [isLoading, selectedMonitorId]);
+
   return (
     <StatusBlocksI18nProvider value={labels}>
       <TooltipProvider>
+        <Toaster position={direction === "rtl" ? "bottom-left" : "bottom-right"} />
         <main className="min-h-svh bg-background text-foreground" dir={direction}>
           <div className="mx-auto flex min-h-svh w-full max-w-5xl flex-col px-4 py-5 sm:px-6 lg:px-8">
             <header className="flex items-center justify-between gap-4 border-border border-b pb-5">
@@ -199,11 +216,13 @@ function App() {
                     )}
                     <div>
                       <div className="font-semibold">
-                        {getBannerCopy(systemStatus, text, isLoading, error)}
+                        {getBannerCopy(systemStatus, text, isLoading, error, isStatusStale)}
                       </div>
                       <div className="mt-0.5 text-muted-foreground text-sm">
                         {error
                           ? text.dataUnavailableDetail
+                          : isStatusStale
+                            ? text.staleDataDetail
                           : `${text.lastChecked}: ${formatDateTime(
                               payload?.generatedAt,
                               locale,
@@ -246,6 +265,7 @@ function App() {
                           monitor={monitor}
                           locale={locale}
                           timezone={payload.timezone}
+                          isSelected={monitor.id === selectedMonitorId}
                         />
                       ))}
                     </div>
@@ -324,19 +344,27 @@ function MonitorRow({
   monitor,
   locale,
   timezone,
+  isSelected,
 }: {
   monitor: MonitorStatus;
   locale: Locale;
   timezone: string;
+  isSelected: boolean;
 }) {
   const text = copy[locale];
   const data = useMemo(() => toStatusBarData(monitor.daily), [monitor.daily]);
   const variant = monitor.currentStatus === "empty" ? "info" : monitor.currentStatus;
+  const { copy: copyToClipboard } = useCopyToClipboard();
+  const shareUrl = getServiceShareUrl(monitor.id);
 
   return (
     <StatusComponent
+      id={`service-${monitor.id}`}
       variant={variant}
-      className="rounded-lg border bg-card px-4 py-4"
+      className={cn(
+        "rounded-lg border bg-card px-4 py-4 transition",
+        isSelected && "ring-2 ring-primary/35 ring-offset-2 ring-offset-background",
+      )}
     >
       <StatusComponentHeader className="items-start gap-4">
         <div className="flex min-w-0 items-start gap-2">
@@ -354,6 +382,25 @@ function MonitorRow({
               <span className="truncate">{monitor.url}</span>
               <ExternalLink className="size-3 shrink-0" />
             </a>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  copyToClipboard(shareUrl, {
+                    withToast: true,
+                    successMessage: text.copied,
+                  })
+                }
+              >
+                <Copy className="size-3.5" />
+                {text.copyLink}
+              </Button>
+              {monitor.currentStatus === "error" && (
+                <RecoveryWatchButton monitorId={monitor.id} locale={locale} />
+              )}
+            </div>
           </div>
         </div>
         <div className="flex shrink-0 items-start gap-3 pt-0.5">
@@ -383,6 +430,104 @@ function MonitorRow({
         </dl>
       </StatusComponentBody>
     </StatusComponent>
+  );
+}
+
+function RecoveryWatchButton({
+  monitorId,
+  locale,
+}: {
+  monitorId: string;
+  locale: Locale;
+}) {
+  const text = copy[locale];
+  const [state, setState] = useState<"idle" | "loading" | "watching">("idle");
+  const isLoading = state === "loading";
+  const isWatching = state === "watching";
+
+  async function handleWatch() {
+    if (isIosBrowser() && !isStandaloneWebApp()) {
+      toast.error(text.iosInstallRequired);
+      return;
+    }
+
+    if (!supportsPushNotifications()) {
+      toast.error(text.watchUnavailable);
+      return;
+    }
+
+    try {
+      setState("loading");
+
+      if (Notification.permission === "denied") {
+        throw new Error(text.notificationsBlocked);
+      }
+
+      const permission =
+        Notification.permission === "granted"
+          ? "granted"
+          : await Notification.requestPermission();
+      if (permission !== "granted") {
+        throw new Error(text.notificationsBlocked);
+      }
+
+      const configResponse = await fetch("/api/push-config", { cache: "no-store" });
+      if (!configResponse.ok) throw new Error(text.watchUnavailable);
+      const config = (await configResponse.json()) as {
+        supported: boolean;
+        publicKey?: string;
+      };
+      if (!config.supported || !config.publicKey) throw new Error(text.watchUnavailable);
+
+      const registration = await getPushServiceWorkerRegistration();
+      const subscription = await getPushSubscription(
+        registration,
+        urlBase64ToUint8Array(config.publicKey),
+      );
+
+      const response = await fetch("/api/watch", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          monitorId,
+          subscription: subscription.toJSON(),
+        }),
+      });
+
+      if (response.status === 409) {
+        toast.info(text.serviceAlreadyUp);
+        setState("idle");
+        return;
+      }
+
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(body?.error || text.watchUnavailable);
+      }
+
+      setState("watching");
+      toast.success(text.watchRegistered);
+    } catch (error) {
+      setState("idle");
+      toast.error(getPushErrorMessage(error, text));
+    }
+  }
+
+  return (
+    <Button
+      type="button"
+      variant={isWatching ? "secondary" : "destructive"}
+      size="sm"
+      disabled={isLoading || isWatching}
+      onClick={handleWatch}
+    >
+      {isLoading ? (
+        <LoaderCircle className="size-3.5 animate-spin" />
+      ) : (
+        <BellRing className="size-3.5" />
+      )}
+      {isLoading ? text.notificationLoading : text.notifyWhenBack}
+    </Button>
   );
 }
 
@@ -446,9 +591,11 @@ function getBannerCopy(
   text: (typeof copy)[Locale],
   isLoading: boolean,
   error: string | null,
+  isStale: boolean,
 ) {
   if (isLoading) return text.pending;
   if (error) return text.dataUnavailable;
+  if (isStale) return text.staleData;
   if (status === "error") return text.outage;
   if (status === "info") return text.pending;
   return text.allClear;
@@ -504,6 +651,119 @@ function toggleTheme(
   }
 
   documentWithTransition.startViewTransition(updateTheme);
+}
+
+function getInitialSelectedMonitorId() {
+  if (typeof window === "undefined") return null;
+  return getMonitorIdFromPath(window.location.pathname);
+}
+
+function getServiceShareUrl(monitorId: string) {
+  if (typeof window === "undefined") return getMonitorPath(monitorId);
+  return new URL(getMonitorPath(monitorId), window.location.origin).toString();
+}
+
+function isPayloadStale(value: string | null | undefined) {
+  if (!value) return false;
+  const ageMinutes = (Date.now() - new Date(value).getTime()) / 60_000;
+  return Number.isFinite(ageMinutes) && ageMinutes > 75;
+}
+
+function supportsPushNotifications() {
+  return (
+    typeof window !== "undefined" &&
+    "Notification" in window &&
+    "serviceWorker" in navigator &&
+    "PushManager" in window &&
+    (!isIosBrowser() || isStandaloneWebApp())
+  );
+}
+
+async function getPushServiceWorkerRegistration() {
+  const registration = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+  await registration.update().catch(() => undefined);
+  return navigator.serviceWorker.ready;
+}
+
+async function getPushSubscription(
+  registration: ServiceWorkerRegistration,
+  applicationServerKey: Uint8Array<ArrayBuffer>,
+) {
+  const existingSubscription = await registration.pushManager.getSubscription();
+  if (
+    existingSubscription &&
+    !arrayBufferMatches(
+      existingSubscription.options.applicationServerKey,
+      applicationServerKey.buffer,
+    )
+  ) {
+    await existingSubscription.unsubscribe().catch(() => undefined);
+  } else if (existingSubscription) {
+    return existingSubscription;
+  }
+
+  return registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey,
+  });
+}
+
+function getPushErrorMessage(error: unknown, text: (typeof copy)[Locale]) {
+  if (error instanceof Error && error.message === text.notificationsBlocked) {
+    return error.message;
+  }
+
+  const message = error instanceof Error ? error.message : "";
+  const name = error instanceof Error ? error.name : "";
+  if (
+    name === "AbortError" ||
+    name === "InvalidStateError" ||
+    name === "NotSupportedError" ||
+    /push service|registration failed/i.test(message)
+  ) {
+    return isIosBrowser() && !isStandaloneWebApp()
+      ? text.iosInstallRequired
+      : text.pushRegistrationFailed;
+  }
+
+  return message || text.watchUnavailable;
+}
+
+function arrayBufferMatches(current: ArrayBuffer | null, expected: ArrayBuffer) {
+  if (!current || current.byteLength !== expected.byteLength) return false;
+
+  const currentBytes = new Uint8Array(current);
+  const expectedBytes = new Uint8Array(expected);
+  return currentBytes.every((byte, index) => byte === expectedBytes[index]);
+}
+
+function isIosBrowser() {
+  if (typeof navigator === "undefined") return false;
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+}
+
+function isStandaloneWebApp() {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (navigator as Navigator & { standalone?: boolean }).standalone === true
+  );
+}
+
+function urlBase64ToUint8Array(value: string): Uint8Array<ArrayBuffer> {
+  const padding = "=".repeat((4 - (value.length % 4)) % 4);
+  const base64 = `${value}${padding}`.replace(/-/g, "+").replace(/_/g, "/");
+  const raw = window.atob(base64);
+  const output = new Uint8Array(new ArrayBuffer(raw.length));
+
+  for (let index = 0; index < raw.length; index += 1) {
+    output[index] = raw.charCodeAt(index);
+  }
+
+  return output;
 }
 
 export default App;

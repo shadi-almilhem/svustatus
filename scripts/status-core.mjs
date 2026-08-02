@@ -286,6 +286,31 @@ export function normalizeHistory(history, monitors) {
   return normalized;
 }
 
+export function mergeStatusHistories(payloads, monitors) {
+  const merged = {};
+
+  for (const monitor of monitors) {
+    const recordsByCheck = new Map();
+
+    for (const payload of payloads) {
+      const records = payload?.history?.[monitor.id];
+      if (!Array.isArray(records)) continue;
+
+      for (const record of records) {
+        if (!record?.checkedAt || !Number.isFinite(Date.parse(record.checkedAt))) continue;
+        const sanitized = sanitizeResult({ ...record, id: monitor.id });
+        recordsByCheck.set(sanitized.checkedAt, sanitized);
+      }
+    }
+
+    merged[monitor.id] = [...recordsByCheck.values()].sort(
+      (a, b) => Date.parse(a.checkedAt) - Date.parse(b.checkedAt),
+    );
+  }
+
+  return merged;
+}
+
 export function getRecentDateKeys(historyDays, timezone, now = new Date()) {
   const keys = [];
   for (let offset = historyDays - 1; offset >= 0; offset -= 1) {

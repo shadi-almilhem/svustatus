@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildStatusPayload,
   calculateUptimePercent,
+  mergeStatusHistories,
   normalizeConfig,
 } from "./status-core.mjs";
 
@@ -100,6 +101,34 @@ describe("status aggregation", () => {
         check("portal", "2026-05-05T11:00:00.000Z", false),
       ]),
     ).toBe(75);
+  });
+
+  it("merges fallback and primary histories without duplicate hourly checks", () => {
+    const fallback = {
+      history: {
+        portal: [
+          check("portal", "2026-05-04T08:00:00.000Z", true),
+          check("portal", "2026-05-05T08:00:00.000Z", true),
+        ],
+      },
+    };
+    const primary = {
+      history: {
+        portal: [
+          check("portal", "2026-05-05T08:00:00.000Z", false),
+          check("portal", "2026-05-05T09:00:00.000Z", true),
+        ],
+      },
+    };
+
+    const history = mergeStatusHistories([fallback, primary], config.monitors);
+
+    expect(history.portal.map((record) => record.checkedAt)).toEqual([
+      "2026-05-04T08:00:00.000Z",
+      "2026-05-05T08:00:00.000Z",
+      "2026-05-05T09:00:00.000Z",
+    ]);
+    expect(history.portal[1].ok).toBe(false);
   });
 });
 

@@ -1,7 +1,14 @@
-name = "svustatus"
-pages_build_output_dir = "dist"
+name = "svustatus-cron"
+main = "workers/status-cron.ts"
 compatibility_date = "2026-05-10"
 compatibility_flags = ["nodejs_compat"]
+
+[triggers]
+crons = ["5 * * * *"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
 
 [vars]
 SITE_URL = "https://svustatus.pages.dev"
@@ -16,3 +23,10 @@ id = "3c04fc2d620f4cdd82ec851375c84aba"
 binding = "WATCH_DB"
 database_name = "svustatus-watch"
 database_id = "5c8b741d-eb30-42ab-adc6-7e1006368d6b"
+
+# Required secrets:
+#   npx wrangler secret put VAPID_PUBLIC_KEY --config wrangler.status.toml
+#   npx wrangler secret put VAPID_PRIVATE_KEY --config wrangler.status.toml
+# Optional:
+#   npx wrangler secret put VAPID_SUBJECT --config wrangler.status.toml
+#   npx wrangler secret put CRON_SECRET --config wrangler.status.toml

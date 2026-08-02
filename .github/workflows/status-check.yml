@@ -3,10 +3,9 @@ name: Scheduled Status Check
 on:
   workflow_dispatch:
   schedule:
-    # Primary hourly check. The :47 entry is a guarded backup for occasional
-    # GitHub scheduler delays/skips; it only runs checks when data is stale.
-    - cron: "17 * * * *"
-    - cron: "47 * * * *"
+    # Twice-hourly legacy fallback for status-data branch consumers. Production
+    # reads the Cloudflare Worker/KV pipeline, which runs once per hour.
+    - cron: "*/30 * * * *"
 
 permissions:
   contents: write
@@ -55,7 +54,7 @@ jobs:
               const payload = await response.json();
               const generatedAt = new Date(payload.generatedAt).getTime();
               const ageMinutes = (Date.now() - generatedAt) / 60_000;
-              shouldRun = !Number.isFinite(generatedAt) || ageMinutes >= 55;
+              shouldRun = !Number.isFinite(generatedAt) || ageMinutes >= 25;
               reason = Number.isFinite(generatedAt)
                 ? `latest status data is ${Math.round(ageMinutes)} minutes old`
                 : "latest status data has an invalid timestamp";

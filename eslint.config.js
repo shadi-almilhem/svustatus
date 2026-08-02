@@ -31,4 +31,22 @@ export default defineConfig([
       'react-refresh/only-export-components': 'off',
     },
   },
+  {
+    files: ['functions/**/*.ts', 'workers/**/*.ts'],
+    languageOptions: {
+      globals: {
+        ...globals.serviceworker,
+        D1Database: 'readonly',
+        ExecutionContext: 'readonly',
+        Fetcher: 'readonly',
+        KVNamespace: 'readonly',
+        PagesFunction: 'readonly',
+        ScheduledController: 'readonly',
+      },
+    },
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

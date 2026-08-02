@@ -65,7 +65,8 @@ type SerializedStatusBarData = Omit<StatusBarData, "events"> & {
 };
 
 export const STATUS_DATA_URL =
-  import.meta.env.VITE_STATUS_DATA_URL?.trim() || "/status.json";
+  import.meta.env.VITE_STATUS_DATA_URL?.trim() ||
+  (import.meta.env.DEV ? "/status.json" : "/api/status");
 
 export async function fetchStatusPayload(signal?: AbortSignal) {
   const response = await fetch(STATUS_DATA_URL, {

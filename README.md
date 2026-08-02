@@ -11,9 +11,11 @@ Repository: https://github.com/shadi-almilhem/svustatus
 - Arabic and English interface with RTL support.
 - Public reachability checks for SVUIS, LMS, mail, the main website, and the requests system.
 - 45-day uptime history rendered with OpenStatus-compatible status bars.
+- Shareable service links like `/lms` and `/svuis` with live Open Graph images.
+- One-time browser recovery notifications for services that are currently down.
 - Local Thmanyah Sans font files for fast loading and consistent Arabic rendering.
-- Static deployment friendly: the app only needs `dist` plus a public JSON data URL.
-- Hourly checks through GitHub Actions, with manual workflow dispatch support.
+- Static-first deployment with Cloudflare Pages Functions for status JSON, OG images, and notification registration.
+- Dependable hourly checks through a Cloudflare Worker Cron Trigger, with a twice-hourly GitHub Actions fallback for the legacy `status-data` branch.
 
 ## Tech Stack
 
@@ -44,7 +46,7 @@ Start the development server:
 npm run dev
 ```
 
-By default, local development reads `public/status.json`. To read status data from another URL, create an `.env.local` file:
+By default, local development reads `public/status.json`. Production reads `/api/status`, which uses Cloudflare KV when configured. To read status data from another URL locally, create an `.env.local` file:
 
 ```bash
 VITE_STATUS_DATA_URL=https://raw.githubusercontent.com/<owner>/<repo>/status-data/status.json
@@ -89,18 +91,54 @@ Production is configured in `.env.production`:
 VITE_STATUS_DATA_URL=https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/status.json
 ```
 
+## Cloudflare Runtime
+
+Production uses two Cloudflare pieces:
+
+- Cloudflare Pages + Pages Functions for the React app, `/api/status`, `/api/watch`, `/api/push-config`, service route meta injection, and `/og/<service>.png`.
+- A separate Worker from `wrangler.status.toml` for the `5 * * * *` hourly checks.
+
+On every run, the Worker merges the public `status-data` branch with KV before
+adding the new measurement. That preserves older checks collected by the GitHub
+fallback, repairs historical gaps when either store has data, and deduplicates
+records by check timestamp.
+
+Create the Cloudflare resources:
+
+```bash
+npx wrangler kv namespace create STATUS_KV
+npx wrangler d1 create svustatus-watch
+npx wrangler d1 migrations apply svustatus-watch
+```
+
+Then copy the returned KV namespace ID and D1 database ID into `wrangler.status.toml`. Configure the same `STATUS_KV` and `WATCH_DB` bindings for the Pages project in the Cloudflare dashboard or uncomment/fill the binding blocks in `wrangler.toml`.
+
+Generate VAPID keys for Web Push:
+
+```bash
+npx web-push generate-vapid-keys
+npx wrangler secret put VAPID_PRIVATE_KEY --config wrangler.status.toml
+```
+
+Add `VAPID_PUBLIC_KEY` to the `[vars]` section for both `wrangler.toml` and `wrangler.status.toml`, because `/api/push-config` exposes the public key to browsers and the scheduled Worker needs the same public key when signing push messages. `VAPID_PRIVATE_KEY` must stay only on the scheduled Worker secret.
+
+Deploy the scheduled checker:
+
+```bash
+npx wrangler deploy --config wrangler.status.toml
+```
+
 ## GitHub Actions
 
-`.github/workflows/status-check.yml` runs:
+`.github/workflows/status-check.yml` is now a legacy fallback for the `status-data` branch. It runs:
 
 - on `workflow_dispatch`
-- hourly at minute 17
-- at minute 47 as a guarded backup
+- every 30 minutes
 
 The workflow:
 
 1. Checks whether the latest `status-data/status.json` is stale.
-2. Skips the backup run when the data is still fresh.
+2. Skips runs when the data is still fresh.
 3. Restores or creates the `status-data` branch.
 4. Runs `scripts/check-status.mjs`.
 5. Writes `status.json`.
@@ -108,10 +146,9 @@ The workflow:
 
 The workflow needs `contents: write`, which is already declared in the workflow file.
 
-The primary cron expression is `17 * * * *`, which is hourly. GitHub scheduled
-workflows can occasionally be delayed or skipped, so the guarded backup entry
-keeps the status data close to hourly without running duplicate checks every
-30 minutes.
+The production checker is the Cloudflare Worker Cron Trigger in
+`wrangler.status.toml`. The GitHub workflow remains useful as a public fallback
+for local development, static mirrors, or manual recovery.
 
 ## Deployment
 
@@ -119,22 +156,24 @@ For Cloudflare Pages or any static host:
 
 - Build command: `npm run build`
 - Build output directory: `dist`
-- Production environment variable: `VITE_STATUS_DATA_URL=https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/status.json`
+- Production environment variable: `VITE_STATUS_DATA_URL=/api/status`
 
-The repository or the generated JSON URL must remain public. The current GitHub repository is public, so unauthenticated visitors can access both the repo page and the raw `status-data` JSON.
+The repository or the generated JSON URL should remain public for fallback use. Production status reads from Cloudflare KV through `/api/status`; the raw `status-data` JSON remains a backup source.
 
-This repo also includes `.github/workflows/pages-deploy.yml`, which deploys to
-Cloudflare Pages whenever code is pushed to `main`. The workflow uses
-`cloudflare/wrangler-action` and uploads the `dist` folder to the Pages project
-defined in `wrangler.toml`.
+This repo also includes `.github/workflows/pages-deploy.yml`, which deploys both
+Cloudflare Pages and the hourly status Worker whenever code is pushed to `main`.
+The workflow uses `cloudflare/wrangler-action`, uploads `dist` to the Pages
+project defined in `wrangler.toml`, and deploys `wrangler.status.toml` so code
+and Cron Trigger changes stay in sync.
 
 Required GitHub Actions repository secrets:
 
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
 
-The API token must be allowed to edit Cloudflare Pages for the account that owns
-the `svustatus` Pages project. Do not commit Cloudflare tokens to `.env` files.
+The API token must be allowed to edit Cloudflare Pages and Workers Scripts for
+the account that owns the `svustatus` Pages project and `svustatus-cron` Worker.
+Do not commit Cloudflare tokens to `.env` files.
 
 ## Fonts
 

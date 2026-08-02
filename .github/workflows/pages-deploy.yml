@@ -6,7 +6,8 @@
 #    Repo → Settings → Secrets and variables → Actions → “Repository secrets”
 #    → New repository secret:
 #      - CLOUDFLARE_API_TOKEN — https://dash.cloudflare.com/profile/api-tokens
-#        (e.g. “Edit Cloudflare Workers” or custom: Account → Cloudflare Pages → Edit)
+#        Use “Edit Cloudflare Workers”, or a custom token with both
+#        Account → Cloudflare Pages → Edit and Workers Scripts → Edit.
 #      - CLOUDFLARE_ACCOUNT_ID — Cloudflare dashboard → Account home → Account ID
 #
 # B) Environment secrets (optional — if you use job.environment below)
@@ -63,7 +64,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_STATUS_DATA_URL: https://raw.githubusercontent.com/${{ github.repository }}/status-data/status.json
+          VITE_STATUS_DATA_URL: /api/status
         run: pnpm run build
 
       - name: Deploy to Cloudflare Pages
@@ -72,3 +73,10 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=svustatus --branch=main
+
+      - name: Deploy hourly status Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.status.toml

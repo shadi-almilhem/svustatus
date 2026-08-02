@@ -37,6 +37,22 @@ export const copy = {
     latestHttp: "HTTP",
     latency: "Latency",
     attempts: "Attempt",
+    copyLink: "Copy link",
+    copied: "Status link copied",
+    notifyWhenBack: "Notify when back",
+    notificationLoading: "Setting notification",
+    watchRegistered: "We will notify you once this service recovers.",
+    watchUnavailable: "Browser notifications are not available here.",
+    notificationsBlocked:
+      "Notifications are blocked. Enable them in your browser settings first.",
+    pushRegistrationFailed:
+      "Push registration failed on this phone. Check browser/site notifications and try again.",
+    iosInstallRequired:
+      "On iPhone or iPad, add SVU Status to the Home Screen and open it from there to enable notifications.",
+    serviceAlreadyUp: "This service is already reachable.",
+    staleData: "Status data may be stale.",
+    staleDataDetail:
+      "The latest published check is older than expected. Fresh checks should arrive every hour.",
     dataUnavailable: "Status data is not available",
     dataUnavailableDetail:
       "The page loaded, but the generated status JSON could not be read.",
@@ -62,6 +78,22 @@ export const copy = {
     latestHttp: "HTTP",
     latency: "زمن الاستجابة",
     attempts: "المحاولة",
+    copyLink: "نسخ الرابط",
+    copied: "تم نسخ رابط الحالة",
+    notifyWhenBack: "نبهني عند العودة",
+    notificationLoading: "جاري إعداد التنبيه",
+    watchRegistered: "سنرسل لك تنبيهاً عندما تعود هذه الخدمة للعمل.",
+    watchUnavailable: "تنبيهات المتصفح غير متاحة هنا.",
+    notificationsBlocked:
+      "التنبيهات محظورة. فعّلها من إعدادات المتصفح أولاً.",
+    pushRegistrationFailed:
+      "فشل تسجيل التنبيه على هذا الهاتف. تحقق من أذونات التنبيهات للمتصفح والموقع ثم حاول مجدداً.",
+    iosInstallRequired:
+      "على iPhone أو iPad، أضف SVU Status إلى الشاشة الرئيسية وافتحه من هناك لتفعيل التنبيهات.",
+    serviceAlreadyUp: "هذه الخدمة تعمل حالياً.",
+    staleData: "قد تكون بيانات الحالة قديمة.",
+    staleDataDetail:
+      "آخر فحص منشور أقدم من المتوقع. يجب أن تصل الفحوصات الجديدة كل ساعة.",
     dataUnavailable: "بيانات الحالة غير متاحة",
     dataUnavailableDetail:
       "تم تحميل الصفحة، لكن تعذر قراءة ملف الحالة المولد.",
