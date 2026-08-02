@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-02T14:27:45.860Z",
+  "generatedAt": "2026-08-02T15:40:10.956Z",
   "timezone": "Asia/Dubai",
   "historyDays": 45,
   "monitors": [
@@ -12,15 +12,15 @@
       },
       "url": "https://svuis.svuonline.org/SVUIS/index.php",
       "currentStatus": "error",
-      "uptimePercent": 98.22,
-      "uptimeLabel": "98.22%",
+      "uptimePercent": 97.9,
+      "uptimeLabel": "97.90%",
       "latest": {
         "id": "svuis",
         "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-08-02T14:27:25.320Z",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
         "ok": false,
         "status": null,
-        "latencyMs": 10003,
+        "latencyMs": 10002,
         "attempt": 2,
         "error": "Request timed out after 10000 ms"
       },
@@ -750,21 +750,21 @@
           "bar": [
             {
               "status": "success",
-              "height": 41.18
+              "height": 36.84
             },
             {
               "status": "error",
-              "height": 58.82
+              "height": 63.16
             }
           ],
           "card": [
             {
               "status": "success",
-              "value": "9h 53m"
+              "value": "8h 51m"
             },
             {
               "status": "error",
-              "value": "14h 7m"
+              "value": "15h 9m"
             }
           ],
           "events": [
@@ -845,17 +845,17 @@
       },
       "url": "https://lms.svuonline.org/login/index.php",
       "currentStatus": "error",
-      "uptimePercent": 96.92,
-      "uptimeLabel": "96.92%",
+      "uptimePercent": 96.61,
+      "uptimeLabel": "96.61%",
       "latest": {
         "id": "lms",
         "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-08-02T14:27:25.320Z",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
         "ok": false,
         "status": null,
-        "latencyMs": 126,
+        "latencyMs": 10001,
         "attempt": 2,
-        "error": "fetch failed"
+        "error": "Request timed out after 10000 ms"
       },
       "daily": [
         {
@@ -1725,17 +1725,18 @@
         "ar": "البريد الجامعي"
       },
       "url": "https://mail.svuonline.org/",
-      "currentStatus": "success",
-      "uptimePercent": 99.84,
-      "uptimeLabel": "99.84%",
+      "currentStatus": "error",
+      "uptimePercent": 99.68,
+      "uptimeLabel": "99.68%",
       "latest": {
         "id": "mail",
         "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-08-02T14:27:25.320Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1178,
-        "attempt": 1
+        "checkedAt": "2026-08-02T15:39:50.418Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10002,
+        "attempt": 2,
+        "error": "Request timed out after 10000 ms"
       },
       "daily": [
         {
@@ -2447,24 +2448,31 @@
           "bar": [
             {
               "status": "success",
-              "height": 94.12
+              "height": 89.47
             },
             {
               "status": "error",
-              "height": 5.88
+              "height": 10.53
             }
           ],
           "card": [
             {
               "status": "success",
-              "value": "22h 35m"
+              "value": "21h 28m"
             },
             {
               "status": "error",
-              "value": "1h 25m"
+              "value": "2h 32m"
             }
           ],
           "events": [
+            {
+              "id": 1351112114,
+              "name": "SVU Mail outage",
+              "type": "incident",
+              "from": "2026-08-02T15:39:50.418Z",
+              "to": null
+            },
             {
               "id": 1533136372,
               "name": "SVU Mail outage",
@@ -2476,6 +2484,30 @@
         }
       ],
       "incidents": [
+        {
+          "id": 1351112114,
+          "monitorId": "mail",
+          "title": {
+            "en": "SVU Mail outage",
+            "ar": "انقطاع البريد الجامعي"
+          },
+          "affected": {
+            "en": "SVU Mail",
+            "ar": "البريد الجامعي"
+          },
+          "startedAt": "2026-08-02T15:39:50.418Z",
+          "resolvedAt": null,
+          "updates": [
+            {
+              "status": "investigating",
+              "date": "2026-08-02T15:39:50.418Z",
+              "message": {
+                "en": "SVU Mail did not respond successfully.",
+                "ar": "لم يستجب البريد الجامعي بنجاح."
+              }
+            }
+          ]
+        },
         {
           "id": 1533136372,
           "monitorId": "mail",
@@ -2518,17 +2550,17 @@
       },
       "url": "https://svuonline.org/",
       "currentStatus": "error",
-      "uptimePercent": 96.6,
-      "uptimeLabel": "96.60%",
+      "uptimePercent": 96.28,
+      "uptimeLabel": "96.28%",
       "latest": {
         "id": "website",
         "url": "https://svuonline.org/",
-        "checkedAt": "2026-08-02T14:27:25.320Z",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
         "ok": false,
         "status": null,
-        "latencyMs": 257,
+        "latencyMs": 10002,
         "attempt": 2,
-        "error": "fetch failed"
+        "error": "Request timed out after 10000 ms"
       },
       "daily": [
         {
@@ -3455,16 +3487,17 @@
       },
       "url": "https://requestsystem.svuonline.org/",
       "currentStatus": "error",
-      "uptimePercent": 98.7,
-      "uptimeLabel": "98.70%",
+      "uptimePercent": 98.38,
+      "uptimeLabel": "98.38%",
       "latest": {
         "id": "requests",
         "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-08-02T14:27:25.320Z",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
         "ok": false,
-        "status": 502,
-        "latencyMs": 132,
-        "attempt": 2
+        "status": null,
+        "latencyMs": 10002,
+        "attempt": 2,
+        "error": "Request timed out after 10000 ms"
       },
       "daily": [
         {
@@ -4176,21 +4209,21 @@
           "bar": [
             {
               "status": "success",
-              "height": 52.94
+              "height": 47.37
             },
             {
               "status": "error",
-              "height": 47.06
+              "height": 52.63
             }
           ],
           "card": [
             {
               "status": "success",
-              "value": "12h 42m"
+              "value": "11h 22m"
             },
             {
               "status": "error",
-              "value": "11h 18m"
+              "value": "12h 38m"
             }
           ],
           "events": [
@@ -4272,6 +4305,30 @@
     }
   ],
   "incidents": [
+    {
+      "id": 1351112114,
+      "monitorId": "mail",
+      "title": {
+        "en": "SVU Mail outage",
+        "ar": "انقطاع البريد الجامعي"
+      },
+      "affected": {
+        "en": "SVU Mail",
+        "ar": "البريد الجامعي"
+      },
+      "startedAt": "2026-08-02T15:39:50.418Z",
+      "resolvedAt": null,
+      "updates": [
+        {
+          "status": "investigating",
+          "date": "2026-08-02T15:39:50.418Z",
+          "message": {
+            "en": "SVU Mail did not respond successfully.",
+            "ar": "لم يستجب البريد الجامعي بنجاح."
+          }
+        }
+      ]
+    },
     {
       "id": 1796510557,
       "monitorId": "requests",
@@ -10190,6 +10247,26 @@
         "latencyMs": 10003,
         "attempt": 2,
         "error": "Request timed out after 10000 ms"
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-08-02T15:00:04.746Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10000,
+        "attempt": 2,
+        "error": "Request timed out after 10000 ms"
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10002,
+        "attempt": 2,
+        "error": "Request timed out after 10000 ms"
       }
     ],
     "lms": [
@@ -15758,6 +15835,25 @@
         "latencyMs": 126,
         "attempt": 2,
         "error": "fetch failed"
+      },
+      {
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-08-02T15:00:04.746Z",
+        "ok": false,
+        "status": 521,
+        "latencyMs": 210,
+        "attempt": 2
+      },
+      {
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10001,
+        "attempt": 2,
+        "error": "Request timed out after 10000 ms"
       }
     ],
     "mail": [
@@ -21314,6 +21410,25 @@
         "status": 200,
         "latencyMs": 1178,
         "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-08-02T15:00:04.746Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1286,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10002,
+        "attempt": 2,
+        "error": "Request timed out after 10000 ms"
       }
     ],
     "website": [
@@ -26884,6 +26999,25 @@
         "latencyMs": 257,
         "attempt": 2,
         "error": "fetch failed"
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-08-02T15:00:04.746Z",
+        "ok": false,
+        "status": 521,
+        "latencyMs": 214,
+        "attempt": 2
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10002,
+        "attempt": 2,
+        "error": "Request timed out after 10000 ms"
       }
     ],
     "requests": [
@@ -32444,6 +32578,25 @@
         "status": 502,
         "latencyMs": 132,
         "attempt": 2
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-08-02T15:00:04.746Z",
+        "ok": false,
+        "status": 502,
+        "latencyMs": 211,
+        "attempt": 2
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-08-02T15:39:50.418Z",
+        "ok": false,
+        "status": null,
+        "latencyMs": 10002,
+        "attempt": 2,
+        "error": "Request timed out after 10000 ms"
       }
     ]
   }
