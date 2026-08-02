@@ -81,6 +81,15 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=svustatus --branch=main
 
+      - name: Ensure status queue exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if ! pnpm exec wrangler queues info svustatus-checks --config wrangler.status.toml; then
+            pnpm exec wrangler queues create svustatus-checks --config wrangler.status.toml
+          fi
+
       - name: Deploy hourly status Worker
         uses: cloudflare/wrangler-action@v3
         with:

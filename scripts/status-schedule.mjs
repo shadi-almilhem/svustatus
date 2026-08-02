@@ -7,7 +7,7 @@ export function isStatusCheckDue(generatedAt, now = Date.now()) {
 }
 
 export function isStatusRunActive(lastRun, now = Date.now()) {
-  if (lastRun?.state !== "running") return false;
+  if (lastRun?.state !== "running" && lastRun?.state !== "queued") return false;
   const startedAtMs = Date.parse(lastRun.startedAt);
   return Number.isFinite(startedAtMs) && now - startedAtMs < STATUS_RUN_LEASE_MS;
 }

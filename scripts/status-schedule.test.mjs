@@ -27,6 +27,12 @@ describe("status schedule", () => {
     ).toBe(true);
     expect(
       isStatusRunActive(
+        { state: "queued", startedAt: "2026-08-02T09:07:00.001Z" },
+        NOW,
+      ),
+    ).toBe(true);
+    expect(
+      isStatusRunActive(
         { state: "running", startedAt: "2026-08-02T09:06:00.000Z" },
         NOW,
       ),

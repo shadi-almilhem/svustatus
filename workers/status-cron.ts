@@ -36,6 +36,7 @@ type Env = {
   VAPID_PRIVATE_KEY?: string;
   VAPID_SUBJECT?: string;
   CRON_SECRET?: string;
+  STATUS_QUEUE?: Queue<StatusQueueMessage>;
 };
 
 type StatusPayload = {
@@ -60,7 +61,7 @@ type LiveStatusPayload = {
 };
 
 type StatusRun = {
-  state: "running" | "success" | "error";
+  state: "queued" | "running" | "success" | "error";
   trigger: "cron" | "manual";
   scheduledAt: string | null;
   startedAt: string;
@@ -69,6 +70,8 @@ type StatusRun = {
   durationMs?: number;
   error?: string;
 };
+
+type StatusQueueMessage = Pick<StatusRun, "trigger" | "scheduledAt">;
 
 type MonitorStatus = {
   id: string;
@@ -101,6 +104,17 @@ type StatusCheckRow = {
 export default {
   async scheduled(controller: ScheduledController, env: Env) {
     await runStatusCheckIfDue(env, controller.scheduledTime);
+  },
+
+  async queue(batch: MessageBatch<StatusQueueMessage>, env: Env) {
+    for (const message of batch.messages) {
+      try {
+        await runRecordedStatusCheck(env, message.body);
+        message.ack();
+      } catch {
+        message.retry({ delaySeconds: 60 });
+      }
+    }
   },
 
   async fetch(request: Request, env: Env) {
@@ -172,11 +186,11 @@ export default {
       if (!isAuthorizedCronRequest(request, env.CRON_SECRET)) {
         return new Response("Unauthorized", { status: 401 });
       }
-      const result = await runRecordedStatusCheck(env, {
+      const result = await enqueueStatusCheck(env, {
         trigger: "manual",
         scheduledAt: null,
       });
-      return Response.json(result);
+      return Response.json(result, { status: 202 });
     }
 
     return new Response("Not found", { status: 404 });
@@ -184,8 +198,8 @@ export default {
 };
 
 export async function runStatusCheckIfDue(env: Env, scheduledTime: number) {
-  if (!env.STATUS_KV) {
-    throw new Error("STATUS_KV binding is required for scheduled status checks.");
+  if (!env.STATUS_KV || !env.STATUS_QUEUE) {
+    throw new Error("STATUS_KV and STATUS_QUEUE bindings are required for status checks.");
   }
 
   const [generatedAt, lastRun] = await Promise.all([
@@ -199,10 +213,41 @@ export async function runStatusCheckIfDue(env: Env, scheduledTime: number) {
     return { ok: true, skipped: true, reason: "status check is already running" };
   }
 
-  return runRecordedStatusCheck(env, {
+  return enqueueStatusCheck(env, {
     trigger: "cron",
     scheduledAt: new Date(scheduledTime).toISOString(),
   });
+}
+
+async function enqueueStatusCheck(env: Env, context: StatusQueueMessage) {
+  if (!env.STATUS_KV || !env.STATUS_QUEUE) {
+    throw new Error("STATUS_KV and STATUS_QUEUE bindings are required for status checks.");
+  }
+
+  const startedAt = new Date().toISOString();
+  const queuedRun: StatusRun = {
+    state: "queued",
+    ...context,
+    startedAt,
+  };
+  await env.STATUS_KV.put(STATUS_RUN_KEY, JSON.stringify(queuedRun));
+
+  try {
+    await env.STATUS_QUEUE.send(context);
+    return { ok: true, queued: true, startedAt };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    await env.STATUS_KV.put(
+      STATUS_RUN_KEY,
+      JSON.stringify({
+        ...queuedRun,
+        state: "error",
+        completedAt: new Date().toISOString(),
+        error: message,
+      } satisfies StatusRun),
+    );
+    throw error;
+  }
 }
 
 async function runRecordedStatusCheck(

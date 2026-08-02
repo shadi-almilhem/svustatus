@@ -24,6 +24,17 @@ binding = "WATCH_DB"
 database_name = "svustatus-watch"
 database_id = "5c8b741d-eb30-42ab-adc6-7e1006368d6b"
 
+[[queues.producers]]
+binding = "STATUS_QUEUE"
+queue = "svustatus-checks"
+
+[[queues.consumers]]
+queue = "svustatus-checks"
+max_batch_size = 1
+max_batch_timeout = 1
+max_retries = 3
+retry_delay = 60
+
 # Required secrets:
 #   npx wrangler secret put VAPID_PUBLIC_KEY --config wrangler.status.toml
 #   npx wrangler secret put VAPID_PRIVATE_KEY --config wrangler.status.toml
