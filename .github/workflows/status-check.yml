@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Twice-hourly legacy fallback for status-data branch consumers. Production
-    # reads the Cloudflare Worker/KV pipeline, which runs once per hour.
+    # reads the self-healing Cloudflare Worker/KV pipeline.
     - cron: "*/30 * * * *"
 
 permissions:

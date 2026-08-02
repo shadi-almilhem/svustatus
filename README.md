@@ -96,7 +96,9 @@ VITE_STATUS_DATA_URL=https://raw.githubusercontent.com/shadi-almilhem/svustatus/
 Production uses three Cloudflare pieces:
 
 - Cloudflare Pages + Pages Functions for the React app, `/api/status`, `/api/watch`, `/api/push-config`, service route meta injection, and `/og/<service>.jpg`.
-- A separate Worker from `wrangler.status.toml` for the `5 * * * *` hourly checks.
+- A separate Worker from `wrangler.status.toml` that wakes every five minutes,
+  performs a check when the latest measurement is at least 55 minutes old, and
+  retries automatically after a missed or failed run.
 - A private service-bound Worker from `wrangler.og.toml` that renders the
   request-generated card as a real JPEG.
 

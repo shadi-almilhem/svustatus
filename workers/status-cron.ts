@@ -4,6 +4,7 @@ import {
   type PushSubscription,
   type VapidKeys,
 } from "@block65/webcrypto-web-push";
+import { timingSafeEqual } from "node:crypto";
 import monitorConfig from "../monitor.config.json";
 import {
   buildStatusPayload,
@@ -15,8 +16,15 @@ import {
   getRecoveredMonitorIds,
   selectRecoverableWatches,
 } from "../scripts/status-recovery.mjs";
+import {
+  getStatusAgeMinutes,
+  isStatusCheckDue,
+  isStatusRunActive,
+} from "../scripts/status-schedule.mjs";
 
 const STATUS_KV_KEY = "status:latest";
+const STATUS_GENERATED_AT_KEY = "status:generated-at";
+const STATUS_RUN_KEY = "status:run:last";
 const DEFAULT_SITE_URL = "https://svustatus.pages.dev";
 const DEFAULT_STATUS_DATA_URL =
   "https://raw.githubusercontent.com/shadi-almilhem/svustatus/status-data/status.json";
@@ -37,6 +45,17 @@ type StatusPayload = {
   monitors: MonitorStatus[];
 };
 
+type StatusRun = {
+  state: "running" | "success" | "error";
+  trigger: "cron" | "manual";
+  scheduledAt: string | null;
+  startedAt: string;
+  completedAt?: string;
+  generatedAt?: string | null;
+  durationMs?: number;
+  error?: string;
+};
+
 type MonitorStatus = {
   id: string;
   name: { en: string; ar: string };
@@ -55,27 +74,122 @@ type WatchRow = {
 };
 
 export default {
-  async scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(runScheduledStatusCheck(env));
+  async scheduled(controller: ScheduledController, env: Env) {
+    await runStatusCheckIfDue(env, controller.scheduledTime);
   },
 
   async fetch(request: Request, env: Env) {
     const url = new URL(request.url);
     if (url.pathname === "/health") {
-      return Response.json({ ok: true });
+      if (!env.STATUS_KV) {
+        return Response.json(
+          { ok: false, error: "STATUS_KV binding is unavailable" },
+          { status: 503 },
+        );
+      }
+
+      const [generatedAt, lastRun] = await Promise.all([
+        getLatestGeneratedAt(env.STATUS_KV),
+        env.STATUS_KV.get<StatusRun>(STATUS_RUN_KEY, "json"),
+      ]);
+      return Response.json({
+        ok: true,
+        schedule: "*/5 * * * *",
+        triggerIntervalMinutes: 5,
+        targetIntervalMinutes: 60,
+        generatedAt,
+        ageMinutes: getStatusAgeMinutes(generatedAt),
+        checkDue: isStatusCheckDue(generatedAt),
+        lastRun,
+      });
     }
 
     if (url.pathname === "/run") {
-      if (!env.CRON_SECRET || request.headers.get("authorization") !== `Bearer ${env.CRON_SECRET}`) {
+      if (!isAuthorizedCronRequest(request, env.CRON_SECRET)) {
         return new Response("Unauthorized", { status: 401 });
       }
-      const result = await runScheduledStatusCheck(env);
+      const result = await runRecordedStatusCheck(env, {
+        trigger: "manual",
+        scheduledAt: null,
+      });
       return Response.json(result);
     }
 
     return new Response("Not found", { status: 404 });
   },
 };
+
+export async function runStatusCheckIfDue(env: Env, scheduledTime: number) {
+  if (!env.STATUS_KV) {
+    throw new Error("STATUS_KV binding is required for scheduled status checks.");
+  }
+
+  const [generatedAt, lastRun] = await Promise.all([
+    getLatestGeneratedAt(env.STATUS_KV),
+    env.STATUS_KV.get<StatusRun>(STATUS_RUN_KEY, "json"),
+  ]);
+  if (!isStatusCheckDue(generatedAt)) {
+    return { ok: true, skipped: true, reason: "status data is fresh" };
+  }
+  if (isStatusRunActive(lastRun)) {
+    return { ok: true, skipped: true, reason: "status check is already running" };
+  }
+
+  return runRecordedStatusCheck(env, {
+    trigger: "cron",
+    scheduledAt: new Date(scheduledTime).toISOString(),
+  });
+}
+
+async function runRecordedStatusCheck(
+  env: Env,
+  context: Pick<StatusRun, "trigger" | "scheduledAt">,
+) {
+  if (!env.STATUS_KV) {
+    throw new Error("STATUS_KV binding is required for scheduled status checks.");
+  }
+
+  const startedAt = new Date();
+  const run: StatusRun = {
+    state: "running",
+    ...context,
+    startedAt: startedAt.toISOString(),
+  };
+  await env.STATUS_KV.put(STATUS_RUN_KEY, JSON.stringify(run));
+
+  try {
+    const result = await runScheduledStatusCheck(env);
+    const completedAt = new Date();
+    await env.STATUS_KV.put(
+      STATUS_RUN_KEY,
+      JSON.stringify({
+        ...run,
+        state: "success",
+        completedAt: completedAt.toISOString(),
+        generatedAt: result.generatedAt,
+        durationMs: completedAt.getTime() - startedAt.getTime(),
+      } satisfies StatusRun),
+    );
+    return result;
+  } catch (error) {
+    const completedAt = new Date();
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(
+      JSON.stringify({ message: "Scheduled status check failed", error: message }),
+    );
+    await env.STATUS_KV.put(
+      STATUS_RUN_KEY,
+      JSON.stringify({
+        ...run,
+        state: "error",
+        completedAt: completedAt.toISOString(),
+        durationMs: completedAt.getTime() - startedAt.getTime(),
+        error: message,
+      } satisfies StatusRun),
+    );
+    throw error;
+  }
+}
 
 export async function runScheduledStatusCheck(env: Env) {
   if (!env.STATUS_KV) {
@@ -100,6 +214,9 @@ export async function runScheduledStatusCheck(env: Env) {
   ) as StatusPayload;
 
   await env.STATUS_KV.put(STATUS_KV_KEY, JSON.stringify(payload));
+  if (payload.generatedAt) {
+    await env.STATUS_KV.put(STATUS_GENERATED_AT_KEY, payload.generatedAt);
+  }
 
   const recoveredMonitorIds = getRecoveredMonitorIds(previousPayload, payload);
   const notified = await notifyRecoveredWatchers(env, previousPayload, payload, recoveredMonitorIds);
@@ -110,6 +227,28 @@ export async function runScheduledStatusCheck(env: Env) {
     recoveredMonitorIds,
     notified,
   };
+}
+
+async function getLatestGeneratedAt(statusKv: KVNamespace) {
+  const generatedAt = await statusKv.get(STATUS_GENERATED_AT_KEY);
+  if (generatedAt && Number.isFinite(Date.parse(generatedAt))) return generatedAt;
+
+  const payload = await statusKv.get<StatusPayload>(STATUS_KV_KEY, "json");
+  return payload?.generatedAt ?? null;
+}
+
+function isAuthorizedCronRequest(request: Request, secret: string | undefined) {
+  if (!secret) return false;
+  const authorization = request.headers.get("authorization");
+  if (!authorization?.startsWith("Bearer ")) return false;
+
+  const encoder = new TextEncoder();
+  const provided = encoder.encode(authorization.slice("Bearer ".length));
+  const expected = encoder.encode(secret);
+  return (
+    provided.byteLength === expected.byteLength &&
+    timingSafeEqual(provided, expected)
+  );
 }
 
 async function readFallbackStatusPayload(env: Env) {
@@ -225,8 +364,10 @@ async function sendRecoveryNotification(env: Env, watch: WatchRow, monitor: Moni
     privateKey: env.VAPID_PRIVATE_KEY,
   };
   const pushPayload = await buildPushPayload(message, subscription, vapid);
+  const body = new Uint8Array(pushPayload.body.byteLength);
+  body.set(pushPayload.body);
 
-  return fetch(subscription.endpoint, pushPayload);
+  return fetch(subscription.endpoint, { ...pushPayload, body: body.buffer });
 }
 
 async function markWatchNotified(env: Env, id: string, now: Date) {
