@@ -253,13 +253,29 @@ function isAuthorizedCronRequest(request: Request, secret: string | undefined) {
 
 async function readFallbackStatusPayload(env: Env) {
   const url = env.PUBLIC_STATUS_DATA_URL || DEFAULT_STATUS_DATA_URL;
+  const controller = new AbortController();
+  let timeout: ReturnType<typeof setTimeout> | undefined;
 
   try {
-    const response = await fetch(
-      `${url}${url.includes("?") ? "&" : "?"}ts=${Date.now()}`,
-    );
-    if (!response.ok) return null;
-    return (await response.json()) as StatusPayload;
+    return await Promise.race([
+      (async () => {
+        const response = await fetch(
+          `${url}${url.includes("?") ? "&" : "?"}ts=${Date.now()}`,
+          { signal: controller.signal },
+        );
+        if (!response.ok) {
+          void response.body?.cancel();
+          return null;
+        }
+        return (await response.json()) as StatusPayload;
+      })(),
+      new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => {
+          controller.abort();
+          reject(new Error("Historical status fallback timed out"));
+        }, 5_000);
+      }),
+    ]);
   } catch (error) {
     console.warn(
       JSON.stringify({
@@ -268,6 +284,8 @@ async function readFallbackStatusPayload(env: Env) {
       }),
     );
     return null;
+  } finally {
+    if (timeout) clearTimeout(timeout);
   }
 }
 

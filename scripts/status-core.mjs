@@ -103,7 +103,7 @@ export async function checkMonitorOnce(monitor, options, checkedAt, attempt) {
       response.status >= 200 &&
       response.status < 400 &&
       latencyMs <= options.timeoutMs;
-    await response.body?.cancel();
+    void response.body?.cancel();
 
     return {
       id: monitor.id,
