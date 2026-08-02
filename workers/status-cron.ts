@@ -24,6 +24,7 @@ const STATUS_KV_KEY = "status:latest";
 const STATUS_LIVE_KEY = "status:live";
 const STATUS_GENERATED_AT_KEY = "status:generated-at";
 const STATUS_RUN_KEY = "status:run:last";
+const STATUS_SCHEMA_KEY = "status:schema:v2";
 const DEFAULT_SITE_URL = "https://svustatus.pages.dev";
 
 type Env = {
@@ -86,6 +87,17 @@ type WatchRow = {
   notified_at: string | null;
 };
 
+type StatusCheckRow = {
+  monitor_id: string;
+  checked_at: string;
+  url: string;
+  ok: number;
+  status: number | null;
+  latency_ms: number | null;
+  attempt: number;
+  error: string | null;
+};
+
 export default {
   async scheduled(controller: ScheduledController, env: Env) {
     await runStatusCheckIfDue(env, controller.scheduledTime);
@@ -115,6 +127,45 @@ export default {
         checkDue: isStatusCheckDue(generatedAt),
         lastRun,
       });
+    }
+
+    if (url.pathname === "/history") {
+      if (!env.STATUS_KV || !env.WATCH_DB) {
+        return Response.json(
+          { error: "Status storage bindings are unavailable" },
+          { status: 503 },
+        );
+      }
+
+      await ensureStatusSchema(env.STATUS_KV, env.WATCH_DB);
+      const cutoff = Date.now() - 46 * 24 * 60 * 60 * 1000;
+      const requestedAfter = Date.parse(url.searchParams.get("after") ?? "");
+      const after = new Date(
+        Number.isFinite(requestedAfter) ? Math.max(requestedAfter, cutoff) : cutoff,
+      ).toISOString();
+      const afterId = url.searchParams.get("afterId") ?? "";
+      const query = await env.WATCH_DB.prepare(
+        `SELECT monitor_id, checked_at, url, ok, status, latency_ms, attempt, error
+         FROM status_checks
+         WHERE checked_at > ? OR (checked_at = ? AND monitor_id > ?)
+         ORDER BY checked_at, monitor_id
+         LIMIT 500`,
+      )
+        .bind(after, after, afterId)
+        .all<StatusCheckRow>();
+      const rows = query.results ?? [];
+      const last = rows.at(-1);
+
+      return Response.json(
+        {
+          results: rows,
+          nextCursor:
+            rows.length === 500 && last
+              ? { checkedAt: last.checked_at, monitorId: last.monitor_id }
+              : null,
+        },
+        { headers: { "Cache-Control": "public, max-age=300" } },
+      );
     }
 
     if (url.pathname === "/run") {
@@ -209,10 +260,8 @@ export async function runScheduledStatusCheck(env: Env) {
     throw new Error("STATUS_KV and WATCH_DB bindings are required for status checks.");
   }
 
-  const previousLive = await env.STATUS_KV.get<LiveStatusPayload>(
-    STATUS_LIVE_KEY,
-    "json",
-  );
+  await ensureStatusSchema(env.STATUS_KV, env.WATCH_DB);
+  const previousLive = await env.STATUS_KV.get<LiveStatusPayload>(STATUS_LIVE_KEY, "json");
   const config = normalizeConfig(monitorConfig);
   const { results }: { results: CheckResult[] } = await runMonitorChecks(config);
   const payload: LiveStatusPayload = {
@@ -245,6 +294,31 @@ export async function runScheduledStatusCheck(env: Env) {
     recoveredMonitorIds,
     notified,
   };
+}
+
+async function ensureStatusSchema(statusKv: KVNamespace, database: D1Database) {
+  if ((await statusKv.get(STATUS_SCHEMA_KEY)) === "ready") return;
+
+  await database.batch([
+    database.prepare(
+      `CREATE TABLE IF NOT EXISTS status_checks (
+        monitor_id TEXT NOT NULL,
+        checked_at TEXT NOT NULL,
+        url TEXT NOT NULL,
+        ok INTEGER NOT NULL,
+        status INTEGER,
+        latency_ms INTEGER,
+        attempt INTEGER NOT NULL,
+        error TEXT,
+        PRIMARY KEY (monitor_id, checked_at)
+      )`,
+    ),
+    database.prepare(
+      `CREATE INDEX IF NOT EXISTS idx_status_checks_checked_at
+       ON status_checks (checked_at)`,
+    ),
+  ]);
+  await statusKv.put(STATUS_SCHEMA_KEY, "ready");
 }
 
 async function persistStatusChecks(database: D1Database, results: CheckResult[]) {

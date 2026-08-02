@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { historyFromD1Export } from "./status-d1.mjs";
+import { fetchStatusHistory, historyFromD1Export } from "./status-d1.mjs";
 
 const monitors = [
   { id: "portal", url: "https://example.com" },
@@ -56,5 +56,23 @@ describe("D1 status history import", () => {
     );
 
     expect(history).toEqual({ portal: [], lms: [] });
+  });
+
+  it("downloads paginated public history", async () => {
+    const fetchImpl = async (url) => {
+      const after = url.searchParams.get("after");
+      return Response.json(
+        after
+          ? { results: [{ monitor_id: "lms", checked_at: "2026-08-02T11:00:00.000Z" }], nextCursor: null }
+          : {
+              results: [{ monitor_id: "portal", checked_at: "2026-08-02T10:00:00.000Z" }],
+              nextCursor: { checkedAt: "2026-08-02T10:00:00.000Z", monitorId: "portal" },
+            },
+      );
+    };
+
+    const exported = await fetchStatusHistory("https://example.com/history", fetchImpl);
+
+    expect(exported[0].results).toHaveLength(2);
   });
 });

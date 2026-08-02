@@ -81,13 +81,6 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=svustatus --branch=main
 
-      - name: Apply status database migrations
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 migrations apply svustatus-watch --remote --config wrangler.status.toml
-
       - name: Deploy hourly status Worker
         uses: cloudflare/wrangler-action@v3
         with:
