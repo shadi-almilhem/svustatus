@@ -18,16 +18,16 @@ describe("status schedule", () => {
     expect(isStatusCheckDue("invalid", NOW)).toBe(true);
   });
 
-  it("prevents overlapping checks while allowing a retry after ten minutes", () => {
+  it("prevents overlapping checks while allowing a retry after four minutes", () => {
     expect(
       isStatusRunActive(
-        { state: "running", startedAt: "2026-08-02T09:01:00.000Z" },
+        { state: "running", startedAt: "2026-08-02T09:07:00.001Z" },
         NOW,
       ),
     ).toBe(true);
     expect(
       isStatusRunActive(
-        { state: "running", startedAt: "2026-08-02T09:00:00.000Z" },
+        { state: "running", startedAt: "2026-08-02T09:06:00.000Z" },
         NOW,
       ),
     ).toBe(false);

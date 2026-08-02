@@ -1,5 +1,5 @@
 export const STATUS_CHECK_INTERVAL_MS = 55 * 60 * 1000;
-export const STATUS_RUN_LEASE_MS = 10 * 60 * 1000;
+export const STATUS_RUN_LEASE_MS = 4 * 60 * 1000;
 
 export function isStatusCheckDue(generatedAt, now = Date.now()) {
   const generatedAtMs = generatedAt ? Date.parse(generatedAt) : Number.NaN;

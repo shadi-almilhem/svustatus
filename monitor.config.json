@@ -1,8 +1,9 @@
 {
   "timezone": "Asia/Dubai",
   "historyDays": 45,
-  "timeoutMs": 20000,
-  "retries": 3,
+  "timeoutMs": 10000,
+  "retries": 2,
+  "retryDelayMs": 500,
   "monitors": [
     {
       "id": "svuis",

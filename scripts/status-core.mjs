@@ -78,23 +78,32 @@ export async function runMonitorWithRetries(monitor, options, checkedAt) {
 export async function checkMonitorOnce(monitor, options, checkedAt, attempt) {
   const startedAt = Date.now();
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), options.timeoutMs);
+  let timeout;
 
   try {
-    const response = await fetch(monitor.url, {
-      redirect: "follow",
-      signal: controller.signal,
-      headers: {
-        "User-Agent": monitor.userAgent ?? options.userAgent,
-        Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      },
-    });
+    const response = await Promise.race([
+      fetch(monitor.url, {
+        redirect: "follow",
+        signal: controller.signal,
+        headers: {
+          "User-Agent": monitor.userAgent ?? options.userAgent,
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        },
+      }),
+      new Promise((_, reject) => {
+        timeout = setTimeout(() => {
+          controller.abort();
+          reject(new Error(`Request timed out after ${options.timeoutMs} ms`));
+        }, options.timeoutMs);
+      }),
+    ]);
     const latencyMs = Date.now() - startedAt;
     const ok =
       response.status >= 200 &&
       response.status < 400 &&
       latencyMs <= options.timeoutMs;
+    await response.body?.cancel();
 
     return {
       id: monitor.id,
@@ -117,7 +126,7 @@ export async function checkMonitorOnce(monitor, options, checkedAt, attempt) {
       error: error instanceof Error ? error.message : "Unknown check error",
     };
   } finally {
-    clearTimeout(timeout);
+    if (timeout) clearTimeout(timeout);
   }
 }
 

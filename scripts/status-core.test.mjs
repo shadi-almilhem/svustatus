@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   buildStatusPayload,
   calculateUptimePercent,
+  checkMonitorOnce,
   mergeStatusHistories,
   normalizeConfig,
 } from "./status-core.mjs";
@@ -21,6 +22,11 @@ const config = normalizeConfig({
 });
 
 describe("status aggregation", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
   it("marks successful checks as operational", () => {
     const payload = buildStatusPayload(
       config,
@@ -129,6 +135,43 @@ describe("status aggregation", () => {
       "2026-05-05T09:00:00.000Z",
     ]);
     expect(history.portal[1].ok).toBe(false);
+  });
+
+  it("enforces its own deadline when an upstream fetch never settles", async () => {
+    vi.useFakeTimers();
+    vi.spyOn(globalThis, "fetch").mockImplementation(
+      () => new Promise(() => undefined),
+    );
+    const resultPromise = checkMonitorOnce(
+      config.monitors[0],
+      { ...config, timeoutMs: 1_000 },
+      "2026-05-05T08:00:00.000Z",
+      1,
+    );
+
+    await vi.advanceTimersByTimeAsync(1_000);
+    const result = await resultPromise;
+
+    expect(result.ok).toBe(false);
+    expect(result.error).toContain("timed out after 1000 ms");
+  });
+
+  it("cancels response bodies that status checks do not consume", async () => {
+    const cancel = vi.fn().mockResolvedValue(undefined);
+    vi.spyOn(globalThis, "fetch").mockResolvedValue({
+      status: 200,
+      body: { cancel },
+    });
+
+    const result = await checkMonitorOnce(
+      config.monitors[0],
+      config,
+      "2026-05-05T08:00:00.000Z",
+      1,
+    );
+
+    expect(result.ok).toBe(true);
+    expect(cancel).toHaveBeenCalledOnce();
   });
 });
 
