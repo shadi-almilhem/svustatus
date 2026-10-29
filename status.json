@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-29T15:23:43.521Z",
+  "generatedAt": "2026-10-29T20:25:58.174Z",
   "timezone": "Asia/Dubai",
   "historyDays": 45,
   "monitors": [
@@ -17,29 +17,13 @@
       "latest": {
         "id": "svuis",
         "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-10-29T15:23:41.791Z",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1730,
+        "latencyMs": 1118,
         "attempt": 1
       },
       "daily": [
-        {
-          "day": "2026-09-15T00:00:00.000Z",
-          "bar": [
-            {
-              "status": "success",
-              "height": 100
-            }
-          ],
-          "card": [
-            {
-              "status": "success",
-              "value": "24h"
-            }
-          ],
-          "events": []
-        },
         {
           "day": "2026-09-16T00:00:00.000Z",
           "bar": [
@@ -782,6 +766,22 @@
             }
           ],
           "events": []
+        },
+        {
+          "day": "2026-10-30T00:00:00.000Z",
+          "bar": [
+            {
+              "status": "success",
+              "height": 100
+            }
+          ],
+          "card": [
+            {
+              "status": "success",
+              "value": "24h"
+            }
+          ],
+          "events": []
         }
       ],
       "incidents": [
@@ -896,29 +896,13 @@
       "latest": {
         "id": "lms",
         "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-10-29T15:23:41.791Z",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1113,
+        "latencyMs": 873,
         "attempt": 1
       },
       "daily": [
-        {
-          "day": "2026-09-15T00:00:00.000Z",
-          "bar": [
-            {
-              "status": "success",
-              "height": 100
-            }
-          ],
-          "card": [
-            {
-              "status": "success",
-              "value": "24h"
-            }
-          ],
-          "events": []
-        },
         {
           "day": "2026-09-16T00:00:00.000Z",
           "bar": [
@@ -1638,6 +1622,22 @@
             }
           ],
           "events": []
+        },
+        {
+          "day": "2026-10-30T00:00:00.000Z",
+          "bar": [
+            {
+              "status": "success",
+              "height": 100
+            }
+          ],
+          "card": [
+            {
+              "status": "success",
+              "value": "24h"
+            }
+          ],
+          "events": []
         }
       ],
       "incidents": [
@@ -1683,34 +1683,18 @@
       },
       "url": "https://mail.svuonline.org/",
       "currentStatus": "success",
-      "uptimePercent": 95.02,
-      "uptimeLabel": "95.02%",
+      "uptimePercent": 94.93,
+      "uptimeLabel": "94.93%",
       "latest": {
         "id": "mail",
         "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-10-29T15:23:41.791Z",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1368,
+        "latencyMs": 1311,
         "attempt": 1
       },
       "daily": [
-        {
-          "day": "2026-09-15T00:00:00.000Z",
-          "bar": [
-            {
-              "status": "success",
-              "height": 100
-            }
-          ],
-          "card": [
-            {
-              "status": "success",
-              "value": "24h"
-            }
-          ],
-          "events": []
-        },
         {
           "day": "2026-09-16T00:00:00.000Z",
           "bar": [
@@ -2558,6 +2542,22 @@
             }
           ],
           "events": []
+        },
+        {
+          "day": "2026-10-30T00:00:00.000Z",
+          "bar": [
+            {
+              "status": "success",
+              "height": 100
+            }
+          ],
+          "card": [
+            {
+              "status": "success",
+              "value": "24h"
+            }
+          ],
+          "events": []
         }
       ],
       "incidents": [
@@ -2768,29 +2768,13 @@
       "latest": {
         "id": "website",
         "url": "https://svuonline.org/",
-        "checkedAt": "2026-10-29T15:23:41.791Z",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1409,
+        "latencyMs": 1053,
         "attempt": 1
       },
       "daily": [
-        {
-          "day": "2026-09-15T00:00:00.000Z",
-          "bar": [
-            {
-              "status": "success",
-              "height": 100
-            }
-          ],
-          "card": [
-            {
-              "status": "success",
-              "value": "24h"
-            }
-          ],
-          "events": []
-        },
         {
           "day": "2026-09-16T00:00:00.000Z",
           "bar": [
@@ -3510,6 +3494,22 @@
             }
           ],
           "events": []
+        },
+        {
+          "day": "2026-10-30T00:00:00.000Z",
+          "bar": [
+            {
+              "status": "success",
+              "height": 100
+            }
+          ],
+          "card": [
+            {
+              "status": "success",
+              "value": "24h"
+            }
+          ],
+          "events": []
         }
       ],
       "incidents": [
@@ -3560,29 +3560,13 @@
       "latest": {
         "id": "requests",
         "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-10-29T15:23:41.791Z",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1631,
+        "latencyMs": 1258,
         "attempt": 1
       },
       "daily": [
-        {
-          "day": "2026-09-15T00:00:00.000Z",
-          "bar": [
-            {
-              "status": "success",
-              "height": 100
-            }
-          ],
-          "card": [
-            {
-              "status": "success",
-              "value": "24h"
-            }
-          ],
-          "events": []
-        },
         {
           "day": "2026-09-16T00:00:00.000Z",
           "bar": [
@@ -4302,6 +4286,22 @@
             }
           ],
           "events": []
+        },
+        {
+          "day": "2026-10-30T00:00:00.000Z",
+          "bar": [
+            {
+              "status": "success",
+              "height": 100
+            }
+          ],
+          "card": [
+            {
+              "status": "success",
+              "value": "24h"
+            }
+          ],
+          "events": []
         }
       ],
       "incidents": [
@@ -4728,276 +4728,6 @@
   ],
   "history": {
     "svuis": [
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-14T20:20:26.572Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2655,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-14T20:44:22.436Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1572,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-14T21:20:28.751Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2065,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-14T22:20:18.014Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2127,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-14T23:20:26.396Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1887,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-14T23:41:01.000Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1519,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T00:20:25.226Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1874,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T01:20:18.587Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1742,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T02:15:24.544Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1669,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T03:15:25.819Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1383,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T03:26:23.518Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1175,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T04:15:25.293Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1671,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T05:15:28.047Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1891,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T06:15:16.531Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1389,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T07:15:29.229Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1832,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T08:15:19.135Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1780,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T08:53:29.887Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1488,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T09:15:16.948Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2115,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T10:10:28.912Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 3587,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T11:10:32.478Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1718,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T12:10:21.151Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1689,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T13:10:25.147Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1808,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T14:09:41.359Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1422,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T14:10:34.859Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1400,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T15:10:33.923Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1708,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T16:10:21.968Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1548,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T17:05:26.379Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1701,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T18:05:21.199Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1874,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T18:22:21.099Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1395,
-        "attempt": 1
-      },
-      {
-        "id": "svuis",
-        "url": "https://svuis.svuonline.org/SVUIS/index.php",
-        "checkedAt": "2026-09-15T19:00:53.932Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1613,
-        "attempt": 1
-      },
       {
         "id": "svuis",
         "url": "https://svuis.svuonline.org/SVUIS/index.php",
@@ -16655,279 +16385,63 @@
         "status": 200,
         "latencyMs": 1730,
         "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-10-29T15:25:58.022Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 3913,
+        "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-10-29T16:25:59.132Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1678,
+        "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-10-29T17:25:58.169Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 2271,
+        "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-10-29T18:25:58.831Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1967,
+        "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-10-29T19:25:59.776Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1676,
+        "attempt": 1
+      },
+      {
+        "id": "svuis",
+        "url": "https://svuis.svuonline.org/SVUIS/index.php",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1118,
+        "attempt": 1
       }
     ],
     "lms": [
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-14T20:20:26.572Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1451,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-14T20:44:22.436Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1138,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-14T21:20:28.751Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1315,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-14T22:20:18.014Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1285,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-14T23:20:26.396Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1239,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-14T23:41:01.000Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 790,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T00:20:25.226Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1389,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T01:20:18.587Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1041,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T02:15:24.544Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1237,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T03:15:25.819Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1111,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T03:26:23.518Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 956,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T04:15:25.293Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1333,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T05:15:28.047Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1298,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T06:15:16.531Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1136,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T07:15:29.229Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1188,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T08:15:19.135Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1063,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T08:53:29.887Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 949,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T09:15:16.948Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1779,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T10:10:28.912Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2057,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T11:10:32.478Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1233,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T12:10:21.151Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1129,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T13:10:25.147Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1343,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T14:09:41.359Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 933,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T14:10:34.859Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1140,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T15:10:33.923Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1282,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T16:10:21.968Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2265,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T17:05:26.379Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1271,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T18:05:21.199Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1362,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T18:22:21.099Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 931,
-        "attempt": 1
-      },
-      {
-        "id": "lms",
-        "url": "https://lms.svuonline.org/login/index.php",
-        "checkedAt": "2026-09-15T19:00:53.932Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1157,
-        "attempt": 1
-      },
       {
         "id": "lms",
         "url": "https://lms.svuonline.org/login/index.php",
@@ -28582,279 +28096,63 @@
         "status": 200,
         "latencyMs": 1113,
         "attempt": 1
-      }
-    ],
-    "mail": [
+      },
       {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-14T20:20:26.572Z",
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-10-29T15:25:58.022Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1418,
+        "latencyMs": 1338,
         "attempt": 1
       },
       {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-14T20:44:22.436Z",
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-10-29T16:25:59.132Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1544,
+        "latencyMs": 1212,
         "attempt": 1
       },
       {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-14T21:20:28.751Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1521,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-14T22:20:18.014Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1481,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-14T23:20:26.396Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1572,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-14T23:41:01.000Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1046,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T00:20:25.226Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1559,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T01:20:18.587Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1616,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T02:15:24.544Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1395,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T03:15:25.819Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1095,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T03:26:23.518Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1286,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T04:15:25.293Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1601,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T05:15:28.047Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1412,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T06:15:16.531Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1118,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T07:15:29.229Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1683,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T08:15:19.135Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1553,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T08:53:29.887Z",
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-10-29T17:25:58.169Z",
         "ok": true,
         "status": 200,
         "latencyMs": 1356,
         "attempt": 1
       },
       {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T09:15:16.948Z",
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-10-29T18:25:58.831Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 2070,
+        "latencyMs": 1332,
         "attempt": 1
       },
       {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T10:10:28.912Z",
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-10-29T19:25:59.776Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 5514,
+        "latencyMs": 1291,
         "attempt": 1
       },
       {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T11:10:32.478Z",
+        "id": "lms",
+        "url": "https://lms.svuonline.org/login/index.php",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
         "ok": true,
         "status": 200,
-        "latencyMs": 1439,
+        "latencyMs": 873,
         "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T12:10:21.151Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1201,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T13:10:25.147Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2556,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T14:09:41.359Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1253,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T14:10:34.859Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1251,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T15:10:33.923Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1570,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T16:10:21.968Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1582,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T17:05:26.379Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1493,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T18:05:21.199Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1747,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T18:22:21.099Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1296,
-        "attempt": 1
-      },
-      {
-        "id": "mail",
-        "url": "https://mail.svuonline.org/",
-        "checkedAt": "2026-09-15T19:00:53.932Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1499,
-        "attempt": 1
-      },
+      }
+    ],
+    "mail": [
       {
         "id": "mail",
         "url": "https://mail.svuonline.org/",
@@ -40575,279 +39873,63 @@
         "status": 200,
         "latencyMs": 1368,
         "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-10-29T15:25:58.022Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1609,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-10-29T16:25:59.132Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1612,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-10-29T17:25:58.169Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1456,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-10-29T18:25:58.831Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1490,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-10-29T19:25:59.776Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1409,
+        "attempt": 1
+      },
+      {
+        "id": "mail",
+        "url": "https://mail.svuonline.org/",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1311,
+        "attempt": 1
       }
     ],
     "website": [
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-14T20:20:26.572Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1188,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-14T20:44:22.436Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1367,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-14T21:20:28.751Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1121,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-14T22:20:18.014Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1104,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-14T23:20:26.396Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1135,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-14T23:41:01.000Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1162,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T00:20:25.226Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1065,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T01:20:18.587Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1173,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T02:15:24.544Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1428,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T03:15:25.819Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1277,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T03:26:23.518Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1064,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T04:15:25.293Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1095,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T05:15:28.047Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1181,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T06:15:16.531Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 991,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T07:15:29.229Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1188,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T08:15:19.135Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 916,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T08:53:29.887Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1678,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T09:15:16.948Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1977,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T10:10:28.912Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1937,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T11:10:32.478Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1220,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T12:10:21.151Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1021,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T13:10:25.147Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1112,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T14:09:41.359Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1222,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T14:10:34.859Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1051,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T15:10:33.923Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1146,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T16:10:21.968Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1087,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T17:05:26.379Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1081,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T18:05:21.199Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1176,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T18:22:21.099Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1437,
-        "attempt": 1
-      },
-      {
-        "id": "website",
-        "url": "https://svuonline.org/",
-        "checkedAt": "2026-09-15T19:00:53.932Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 991,
-        "attempt": 1
-      },
       {
         "id": "website",
         "url": "https://svuonline.org/",
@@ -52502,279 +51584,63 @@
         "status": 200,
         "latencyMs": 1409,
         "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-10-29T15:25:58.022Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 996,
+        "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-10-29T16:25:59.132Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1130,
+        "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-10-29T17:25:58.169Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1138,
+        "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-10-29T18:25:58.831Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1174,
+        "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-10-29T19:25:59.776Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1133,
+        "attempt": 1
+      },
+      {
+        "id": "website",
+        "url": "https://svuonline.org/",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1053,
+        "attempt": 1
       }
     ],
     "requests": [
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-14T20:20:26.572Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1486,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-14T20:44:22.436Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2827,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-14T21:20:28.751Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1801,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-14T22:20:18.014Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1578,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-14T23:20:26.396Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2005,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-14T23:41:01.000Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1541,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T00:20:25.226Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1755,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T01:20:18.587Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1805,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T02:15:24.544Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1395,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T03:15:25.819Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1366,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T03:26:23.518Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1384,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T04:15:25.293Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1433,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T05:15:28.047Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1546,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T06:15:16.531Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1258,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T07:15:29.229Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2012,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T08:15:19.135Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1652,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T08:53:29.887Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1778,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T09:15:16.948Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2084,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T10:10:28.912Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 4022,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T11:10:32.478Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1521,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T12:10:21.151Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1339,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T13:10:25.147Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1610,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T14:09:41.359Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1523,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T14:10:34.859Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1157,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T15:10:33.923Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1603,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T16:10:21.968Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1416,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T17:05:26.379Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1484,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T18:05:21.199Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1683,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T18:22:21.099Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 2048,
-        "attempt": 1
-      },
-      {
-        "id": "requests",
-        "url": "https://requestsystem.svuonline.org/",
-        "checkedAt": "2026-09-15T19:00:53.932Z",
-        "ok": true,
-        "status": 200,
-        "latencyMs": 1412,
-        "attempt": 1
-      },
       {
         "id": "requests",
         "url": "https://requestsystem.svuonline.org/",
@@ -64429,6 +63295,60 @@
         "ok": true,
         "status": 200,
         "latencyMs": 1631,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-10-29T15:25:58.022Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1832,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-10-29T16:25:59.132Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1487,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-10-29T17:25:58.169Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1439,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-10-29T18:25:58.831Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1648,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-10-29T19:25:59.776Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1465,
+        "attempt": 1
+      },
+      {
+        "id": "requests",
+        "url": "https://requestsystem.svuonline.org/",
+        "checkedAt": "2026-10-29T20:25:56.827Z",
+        "ok": true,
+        "status": 200,
+        "latencyMs": 1258,
         "attempt": 1
       }
     ]
